@@ -1,0 +1,726 @@
+/* ==============================================================================
+   SkillSync | CareerPath AI - Premium SaaS Theme
+   Deep Navy, Dark Purple, Electric Blue & Violet Gradients
+   ============================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg-main: #0b0f19;
+  --bg-card: rgba(19, 27, 46, 0.85);
+  --bg-card-hover: rgba(26, 36, 61, 0.95);
+  --bg-surface: #111827;
+  --border-subtle: rgba(139, 92, 246, 0.2);
+  --border-glow: rgba(99, 102, 241, 0.45);
+  
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #38bdf8 100%);
+  --accent-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  --card-gradient: linear-gradient(145deg, rgba(24, 18, 56, 0.7) 0%, rgba(13, 22, 45, 0.7) 100%);
+  --hero-glow: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.12) 40%, transparent 70%);
+
+  --color-matched: #10b981;
+  --color-matched-bg: rgba(16, 185, 129, 0.15);
+  --color-matched-border: rgba(16, 185, 129, 0.35);
+
+  --color-partial: #f59e0b;
+  --color-partial-bg: rgba(245, 158, 11, 0.15);
+  --color-partial-border: rgba(245, 158, 11, 0.35);
+
+  --color-missing: #ef4444;
+  --color-missing-bg: rgba(239, 68, 68, 0.15);
+  --color-missing-border: rgba(239, 68, 68, 0.35);
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+}
+
+/* Global Font & Baseline */
+html, body, [class*="css"] {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-main);
+}
+
+/* App Background glow */
+.stApp {
+  background: var(--hero-glow), var(--bg-main);
+  background-attachment: fixed;
+}
+
+/* ==============================================================================
+   Brand Logo Styling (Homepage & Sidebar)
+   Preserve aspect ratio, prevent distortion/cropping, responsive glowing design
+   ============================================================================== */
+.homepage-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1.5rem auto;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+.homepage-main-logo {
+  max-width: 480px !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1536 / 1024;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+  filter: drop-shadow(0 0 24px rgba(99, 102, 241, 0.45)) drop-shadow(0 0 48px rgba(139, 92, 246, 0.25));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  border-radius: 16px;
+}
+
+.homepage-main-logo:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 0 32px rgba(99, 102, 241, 0.65)) drop-shadow(0 0 64px rgba(139, 92, 246, 0.4));
+}
+
+.sidebar-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25rem 0.5rem 1rem 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  width: 100%;
+}
+
+.sidebar-logo-img {
+  max-width: 210px !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1536 / 1024;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+  filter: drop-shadow(0 0 14px rgba(99, 102, 241, 0.4)) drop-shadow(0 0 28px rgba(139, 92, 246, 0.2));
+  transition: transform 0.25s ease, filter 0.25s ease;
+  border-radius: 10px;
+}
+
+.sidebar-logo-img:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.6));
+}
+
+@media (max-width: 768px) {
+  .homepage-main-logo {
+    max-width: 320px !important;
+  }
+  .sidebar-logo-img {
+    max-width: 170px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-main-logo {
+    max-width: 250px !important;
+  }
+  .sidebar-logo-img {
+    max-width: 140px !important;
+  }
+}
+
+/* ==============================================================================
+   Hero Section
+   ============================================================================== */
+.hero-container {
+  text-align: center;
+  padding: 2.8rem 1.5rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: 24px;
+  background: var(--card-gradient);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 20px 40px -15px rgba(11, 15, 25, 0.8), 0 0 40px rgba(99, 102, 241, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--primary-gradient);
+  filter: blur(1px);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #c084fc;
+  background: rgba(139, 92, 246, 0.16);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  margin-bottom: 1.2rem;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.2);
+}
+
+.hero-heading {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 40%, #a5b4fc 80%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.03em;
+}
+
+.hero-tagline {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #38bdf8;
+  margin-bottom: 0.8rem;
+  letter-spacing: -0.01em;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto 1.8rem;
+  line-height: 1.6;
+}
+
+/* Feature Cards Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 900px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-heading {
+    font-size: 2.2rem;
+  }
+}
+
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 1.6rem 1.4rem;
+  transition: all 0.28s ease;
+  backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-glow);
+  box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.25);
+  background: var(--bg-card-hover);
+}
+
+.feature-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  background: rgba(139, 92, 246, 0.18);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+.feature-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem;
+}
+
+.feature-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ==============================================================================
+   Input Form & Glass Containers
+   ============================================================================== */
+.glass-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.section-header h2 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Skill Tags Badges */
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #c7d2fe;
+  margin: 3px;
+  transition: all 0.2s ease;
+}
+
+.skill-tag:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* ==============================================================================
+   Status Badges (Matched, Partial, Missing)
+   ============================================================================== */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-matched {
+  background: var(--color-matched-bg);
+  color: var(--color-matched);
+  border: 1px solid var(--color-matched-border);
+}
+
+.status-partial {
+  background: var(--color-partial-bg);
+  color: var(--color-partial);
+  border: 1px solid var(--color-partial-border);
+}
+
+.status-missing {
+  background: var(--color-missing-bg);
+  color: var(--color-missing);
+  border: 1px solid var(--color-missing-border);
+}
+
+/* Priority Badges */
+.badge-priority-high {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-priority-medium {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-priority-low {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ==============================================================================
+   Skill Comparison Table
+   ============================================================================== */
+.skill-comparison-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.skill-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  text-align: left;
+}
+
+.skill-comparison-table th {
+  background: rgba(30, 27, 75, 0.9);
+  color: #c7d2fe;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.skill-comparison-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.skill-comparison-table tr:last-child td {
+  border-bottom: none;
+}
+
+.skill-comparison-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ==============================================================================
+   Metric Score Cards & Banners
+   ============================================================================== */
+.readiness-banner {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(99, 102, 241, 0.2);
+}
+
+.motivational-box {
+  background: rgba(99, 102, 241, 0.1);
+  border-left: 4px solid #8b5cf6;
+  border-radius: 0 12px 12px 0;
+  padding: 1rem 1.4rem;
+  margin: 1.2rem 0;
+  font-style: italic;
+  color: #e0e7ff;
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+/* ==============================================================================
+   Roadmap Weekly Cards & Timeline
+   ============================================================================== */
+.week-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.week-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 8px 24px -6px rgba(139, 92, 246, 0.2);
+}
+
+.week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.week-badge {
+  background: var(--primary-gradient);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.week-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.hours-pill {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.capstone-badge {
+  background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+  color: #ffffff;
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+/* ==============================================================================
+   Portfolio Projects Cards
+   ============================================================================== */
+.project-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 1.8rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-glow);
+  box-shadow: 0 14px 30px -10px rgba(99, 102, 241, 0.3);
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+}
+
+.project-card.beginner::before {
+  background: #10b981;
+}
+
+.project-card.intermediate::before {
+  background: #38bdf8;
+}
+
+.project-card.advanced::before {
+  background: #a855f7;
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.project-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.3rem;
+}
+
+.difficulty-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.difficulty-beginner {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.difficulty-intermediate {
+  background: rgba(56, 189, 248, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.difficulty-advanced {
+  background: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.tech-chip {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* ==============================================================================
+   Streamlit Native Element Customization
+   ============================================================================== */
+/* Primary Buttons */
+div.stButton > button:first-child {
+  background: var(--primary-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.65rem 1.6rem;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+}
+
+div.stButton > button:first-child:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.5);
+  color: #ffffff;
+}
+
+div.stButton > button:first-child:active {
+  transform: translateY(0);
+}
+
+/* Secondary / Download Buttons */
+div.stDownloadButton > button {
+  background: rgba(30, 41, 59, 0.85);
+  color: #f8fafc;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 12px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+div.stDownloadButton > button:hover {
+  background: rgba(46, 61, 88, 0.95);
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+  color: #ffffff;
+}
+
+/* Form Input controls */
+div[data-baseweb="input"] {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(139, 92, 246, 0.25) !important;
+  border-radius: 10px !important;
+}
+
+div[data-baseweb="select"] {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+}
+
+div[data-baseweb="select"] > div {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(139, 92, 246, 0.25) !important;
+  border-radius: 10px !important;
+}
+
+/* Tabs styling */
+.stTabs [data-baseweb="tab-list"] {
+  gap: 8px;
+  background-color: rgba(15, 23, 42, 0.6);
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.stTabs [data-baseweb="tab"] {
+  border-radius: 10px;
+  color: #94a3b8;
+  font-weight: 600;
+  padding: 8px 18px;
+}
+
+.stTabs [aria-selected="true"] {
+  background: var(--primary-gradient) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+/* Expanders */
+.streamlit-expanderHeader {
+  background-color: rgba(19, 27, 46, 0.7) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+  color: #f8fafc !important;
+  font-weight: 600 !important;
+}
+
+/* Metrics */
+[data-testid="stMetricValue"] {
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+}
+
+[data-testid="stMetricLabel"] {
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}

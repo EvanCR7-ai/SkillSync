@@ -1,0 +1,32 @@
+# Environments and Secrets
+.env
+*.env
+.env.local
+.streamlit/secrets.toml
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Streamlit runtime
+.streamlit/*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Output files
+*.pdf
+*.csv
+exported_reports/
