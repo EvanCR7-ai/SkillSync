@@ -1,10 +1,9 @@
-# Environments and Secrets
+# Environment Variables
 .env
-*.env
 .env.local
-.streamlit/secrets.toml
+*.env
 
-# Python artifacts
+# Python Cache
 __pycache__/
 *.py[cod]
 *$py.class
@@ -12,21 +11,16 @@ __pycache__/
 .Python
 env/
 venv/
-.venv/
 ENV/
-build/
-dist/
-*.egg-info/
+.venv/
 
-# Streamlit runtime
-.streamlit/*.log
+# Streamlit
+.streamlit/
 
-# Operating system files
+# OS Specific
 .DS_Store
 Thumbs.db
-desktop.ini
 
-# Output files
-*.pdf
-*.csv
-exported_reports/
+# Generated Exports / Cache
+exports/*.pdf
+exports/*.csv
