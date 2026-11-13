@@ -1,5 +1,5 @@
 """
-SkillSync – Your AI-Powered Career Roadmap
+SkillSync 2.0 – Your AI-Powered Career Roadmap
 Main Streamlit Application
 """
 
@@ -18,7 +18,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="SkillSync – Your AI-Powered Career Roadmap",
+    page_title="SkillSync 2.0 – Your AI-Powered Career Roadmap",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -26,7 +26,6 @@ st.set_page_config(
 
 # Load custom CSS
 def load_css(file_name: str = "styles.css"):
-    # Check directory of app.py first, then cwd
     dir_path = os.path.dirname(os.path.abspath(__file__))
     candidate = os.path.join(dir_path, file_name)
     if not os.path.exists(candidate):
@@ -52,43 +51,40 @@ if "active_tab" not in st.session_state:
 
 
 # ==============================================================================
-# SIDEBAR CONFIGURATION
+# SIDEBAR CONFIGURATION (CENTRALIZED & SECURE)
 # ==============================================================================
 with st.sidebar:
     st.markdown("""
     <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-        <span style="font-size: 2rem;">⚡</span>
+        <span style="font-size: 2.2rem;">⚡</span>
         <div>
-            <div style="font-size: 1.35rem; font-weight: 800; background: linear-gradient(135deg, #00D2FF, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SkillSync</div>
-            <div style="font-size: 0.75rem; color: #94A3B8;">AI Career Guidance Engine</div>
+            <div style="font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, #00D2FF, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em;">SkillSync 2.0</div>
+            <div style="font-size: 0.75rem; color: #94A3B8; font-weight: 500;">Next-Gen AI Career Mentor</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### 🔑 API Configuration")
 
-    env_api_key = os.getenv("GEMINI_API_KEY", "")
-    has_env_key = bool(env_api_key and env_api_key != "your_gemini_api_key_here")
-
-    sidebar_api_key = st.text_input(
-        "Google Gemini API Key",
-        value=env_api_key if has_env_key else "",
-        type="password",
-        help="Enter your Gemini API key here or define GEMINI_API_KEY in .env",
-        placeholder="AIzaSy..."
-    )
-
-    if has_env_key and not sidebar_api_key:
-        st.caption("🟢 Using API key from `.env` environment file.")
-    elif sidebar_api_key:
-        st.caption("🟢 API key loaded.")
+    # Centralized Backend Engine Status
+    engine_status = ai_engine.get_engine_status()
+    if engine_status["connected"]:
+        st.markdown("""
+        <div class="engine-status-box online">
+            <span class="status-dot online"></span>
+            <span>Google Gemini AI Connected</span>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.warning("⚠️ No Gemini API key detected. Add your key above or in `.env`.")
-        st.markdown("[👉 Get a free Gemini API Key](https://aistudio.google.com/)")
+        st.markdown("""
+        <div class="engine-status-box fallback">
+            <span class="status-dot fallback"></span>
+            <span>Curated AI Fallback Engine Active</span>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### 🧭 Quick Controls")
+    st.markdown("### 🧭 Controls & Navigation")
 
     if st.session_state.analysis_result:
         if st.button("🔄 Reset Current Analysis", use_container_width=True):
@@ -97,10 +93,17 @@ with st.sidebar:
             st.session_state.readiness_data = None
             st.rerun()
 
+    # Developer / Admin Status Expander (Clean, No Expose of Secrets)
+    with st.expander("⚙️ System Status", expanded=False):
+        st.markdown(f"**Engine Status:** `{engine_status['label']}`")
+        st.markdown(f"**Config Source:** `{engine_status['source_type']}`")
+        st.markdown(f"**Architecture:** `Streamlit Cloud + GenAI / Heuristic Fallback`")
+        st.caption("Centralized configuration active. Visitors do not require personal keys.")
+
     st.markdown("""
-    <div style="font-size: 0.8rem; color: #64748B; margin-top: 2rem;">
-        SkillSync v2.4 Pro<br/>
-        Empowering ambitious students worldwide.
+    <div style="font-size: 0.8rem; color: #64748B; margin-top: 2.5rem; line-height: 1.5;">
+        <b>SkillSync 2.0 Pro</b><br/>
+        Discover Your Skills. Bridge the Gap. Build Your Future.
     </div>
     """, unsafe_allow_html=True)
 
@@ -111,11 +114,16 @@ with st.sidebar:
 st.markdown("""
 <div class="hero-container">
     <div class="brand-badge">⚡ Next-Gen AI Career Mentor</div>
-    <div class="hero-title">Your Dream Career Starts Here.</div>
-    <div class="hero-tagline">Discover Your Skills. Bridge the Gap. Build Your Future.</div>
+    <h1 class="hero-title">Your Dream Career Starts Here.</h1>
+    <div class="hero-tagline">Discover your skills. Bridge the gap. Build your future.</div>
     <div class="hero-subtitle">
         SkillSync analyzes your current abilities against modern industry standards, identifies critical knowledge gaps,
-        generates an actionable 8-week personalized roadmap, and suggests GitHub-ready portfolio projects.
+        generates an actionable 8-week personalized roadmap, and suggests recruiter-ready GitHub portfolio projects.
+    </div>
+    <div class="hero-cta-wrapper">
+        <a href="#career-form" style="display: inline-flex; align-items: center; gap: 0.6rem; background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #9333EA 100%); color: #FFFFFF; font-weight: 700; border-radius: 12px; padding: 0.85rem 2rem; font-size: 1.05rem; text-decoration: none; box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45); transition: all 0.3s ease;">
+            🚀 Build My Career Roadmap
+        </a>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -155,7 +163,7 @@ with st.expander("ℹ️ How SkillSync Works — 4 Easy Steps", expanded=False):
         <div class="step-card">
             <span class="step-num">1</span>
             <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Input Your Skills</div>
-            <div style="font-size: 0.825rem; color: #94A3B8;">Tell us what technologies you know and choose your dream role.</div>
+            <div style="font-size: 0.85rem; color: #94A3B8;">Tell us what technologies you know and choose your dream role.</div>
         </div>
         """, unsafe_allow_html=True)
     with c2:
@@ -163,7 +171,7 @@ with st.expander("ℹ️ How SkillSync Works — 4 Easy Steps", expanded=False):
         <div class="step-card">
             <span class="step-num">2</span>
             <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">AI Analysis</div>
-            <div style="font-size: 0.825rem; color: #94A3B8;">Gemini computes your readiness score and highlights critical gaps.</div>
+            <div style="font-size: 0.85rem; color: #94A3B8;">The AI engine computes your readiness score and pinpoints exact gaps.</div>
         </div>
         """, unsafe_allow_html=True)
     with c3:
@@ -171,7 +179,7 @@ with st.expander("ℹ️ How SkillSync Works — 4 Easy Steps", expanded=False):
         <div class="step-card">
             <span class="step-num">3</span>
             <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Follow Roadmap</div>
-            <div style="font-size: 0.825rem; color: #94A3B8;">Execute week-by-week goals, exercises, and study resources.</div>
+            <div style="font-size: 0.85rem; color: #94A3B8;">Execute week-by-week goals, exercises, and study resources.</div>
         </div>
         """, unsafe_allow_html=True)
     with c4:
@@ -179,11 +187,11 @@ with st.expander("ℹ️ How SkillSync Works — 4 Easy Steps", expanded=False):
         <div class="step-card">
             <span class="step-num">4</span>
             <div style="font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Build & Get Hired</div>
-            <div style="font-size: 0.825rem; color: #94A3B8;">Complete portfolio projects and export your PDF roadmap.</div>
+            <div style="font-size: 0.85rem; color: #94A3B8;">Complete portfolio projects and export your PDF roadmap.</div>
         </div>
         """, unsafe_allow_html=True)
 
-st.markdown("<div style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
+st.markdown("<div id='career-form' style='margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
 
 
 # ==============================================================================
@@ -308,8 +316,7 @@ if analyze_btn:
     if not is_valid:
         st.error(f"❌ Input Validation Error: {err_msg}")
     else:
-        # Check API key presence
-        effective_key = ai_engine.get_api_key(sidebar_api_key)
+        effective_key = ai_engine.get_api_key()
         with st.spinner("🤖 SkillSync is evaluating your profile, identifying skill gaps, and architecting your 8-week curriculum..."):
             try:
                 result = ai_engine.analyze_career_path(
@@ -374,7 +381,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     # Source Indicator Badge
     if analysis.get("career_summary", {}).get("source") == "gemini_ai":
         st.markdown("""
-        <div style="margin-bottom: 1rem;">
+        <div style="margin-bottom: 1.25rem;">
             <span class="badge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34D399;">
                 ✨ Generated with Live Google Gemini AI
             </span>
@@ -382,7 +389,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="margin-bottom: 1rem;">
+        <div style="margin-bottom: 1.25rem;">
             <span class="badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8;">
                 ℹ️ Generated with Curated Industry Roadmap (Live AI Fallback Mode)
             </span>
@@ -422,7 +429,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
             )
             st.plotly_chart(gauge_fig, use_container_width=True)
             st.markdown(f"""
-            <div style="text-align: center; font-size: 0.9rem; color: #94A3B8; margin-top: -10px;">
+            <div style="text-align: center; font-size: 0.95rem; color: #94A3B8; margin-top: -10px;">
                 Status: <b style="color: #FFFFFF;">{readiness['category']}</b>
             </div>
             """, unsafe_allow_html=True)
@@ -458,7 +465,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
         # Comparison Table
         st.markdown("#### 🔍 Required Skills vs. Your Current Status")
         st.markdown("""
-        <div style="font-size: 0.875rem; color: #94A3B8; margin-bottom: 0.75rem;">
+        <div style="font-size: 0.88rem; color: #94A3B8; margin-bottom: 0.75rem;">
             Below is the comprehensive matrix of core technologies needed for your target role. 
             Color badges indicate whether you possess the skill (<span style="color:#10B981">Green</span>), 
             need refinement (<span style="color:#F59E0B">Amber</span>), 
@@ -474,7 +481,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     with tab_roadmap:
         st.markdown(f"### 🗺️ Tailored 8-Week Roadmap for **{profile.get('target_role')}**")
         st.markdown(f"""
-        <div style="font-size: 0.9rem; color: #94A3B8; margin-bottom: 1rem;">
+        <div style="font-size: 0.95rem; color: #94A3B8; margin-bottom: 1.25rem;">
             Calibrated for <b>{profile.get('study_hours')}</b> per week at <b>{profile.get('experience_level')}</b> level.
             Skills you already possess have been streamlined so you can focus entirely on critical gaps.
         </div>
@@ -492,7 +499,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
                 placeholder="e.g. Focus more on cloud deployment and Docker; make Week 4 heavier on SQL optimization"
             )
             if st.button("Regenerate Roadmap with AI", key="btn_regen_roadmap"):
-                effective_key = ai_engine.get_api_key(sidebar_api_key)
+                effective_key = ai_engine.get_api_key()
                 with st.spinner("Regenerating 8-week curriculum..."):
                     try:
                         new_roadmap = ai_engine.regenerate_roadmap_ai(
@@ -512,7 +519,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     with tab_projects:
         st.markdown(f"### 🚀 Standout Portfolio Projects for **{profile.get('target_role')}**")
         st.markdown("""
-        <div style="font-size: 0.9rem; color: #94A3B8; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.95rem; color: #94A3B8; margin-bottom: 1.5rem;">
             These 3 curated projects demonstrate graduated mastery from foundational to production-grade architecture.
             Each project is specifically chosen to validate the skills in your learning roadmap.
         </div>
@@ -529,7 +536,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
                 placeholder="e.g. Focus on FinTech and algorithmic trading; include real-time WebSocket data"
             )
             if st.button("Generate 3 New Project Ideas", key="btn_regen_projects"):
-                effective_key = ai_engine.get_api_key(sidebar_api_key)
+                effective_key = ai_engine.get_api_key()
                 with st.spinner("Brainstorming novel portfolio project concepts..."):
                     try:
                         new_projects = ai_engine.regenerate_projects_ai(
@@ -549,7 +556,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     with tab_downloads:
         st.markdown("### 📥 Download & Export Your Career Package")
         st.markdown("""
-        <div style="font-size: 0.9rem; color: #94A3B8; margin-bottom: 1.5rem;">
+        <div style="font-size: 0.95rem; color: #94A3B8; margin-bottom: 1.5rem;">
             Export your customized roadmap and diagnostics for offline study, mentor reviews, or academic submissions.
         </div>
         """, unsafe_allow_html=True)
@@ -559,9 +566,9 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
         with col_pdf:
             st.markdown("""
             <div class="glass-panel" style="text-align: center;">
-                <div style="font-size: 3rem; margin-bottom: 0.5rem;">📄</div>
-                <div style="font-weight: 700; font-size: 1.15rem; color: #FFFFFF;">Complete Career Roadmap (PDF)</div>
-                <div style="font-size: 0.85rem; color: #94A3B8; margin: 0.5rem 0 1.25rem 0;">
+                <div style="font-size: 3.25rem; margin-bottom: 0.5rem;">📄</div>
+                <div style="font-weight: 800; font-size: 1.25rem; color: #FFFFFF;">Complete Career Roadmap (PDF)</div>
+                <div style="font-size: 0.88rem; color: #94A3B8; margin: 0.5rem 0 1.5rem 0; line-height: 1.5;">
                     Includes executive summary, skill gap diagnostics table, full 8-week curriculum breakdown, and 3 project blueprints.
                 </div>
             """, unsafe_allow_html=True)
@@ -590,9 +597,9 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
         with col_csv:
             st.markdown("""
             <div class="glass-panel" style="text-align: center;">
-                <div style="font-size: 3rem; margin-bottom: 0.5rem;">📊</div>
-                <div style="font-weight: 700; font-size: 1.15rem; color: #FFFFFF;">Skill Gap Analysis (CSV)</div>
-                <div style="font-size: 0.85rem; color: #94A3B8; margin: 0.5rem 0 1.25rem 0;">
+                <div style="font-size: 3.25rem; margin-bottom: 0.5rem;">📊</div>
+                <div style="font-weight: 800; font-size: 1.25rem; color: #FFFFFF;">Skill Gap Analysis (CSV)</div>
+                <div style="font-size: 0.88rem; color: #94A3B8; margin: 0.5rem 0 1.5rem 0; line-height: 1.5;">
                     Download the structured skill comparison dataset with categories, priority flags, and recommended next steps for spreadsheet tracking.
                 </div>
             """, unsafe_allow_html=True)
@@ -613,8 +620,8 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
 
 # Footer
 st.markdown("""
-<div style="text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; color: #64748B;">
-    ⚡ <b>SkillSync</b> — Your AI-Powered Career Roadmap • Built with Google Gemini API, Streamlit, and Plotly<br/>
+<div style="text-align: center; margin-top: 4.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.88rem; color: #64748B;">
+    ⚡ <b>SkillSync 2.0</b> — Your AI-Powered Career Roadmap • Built with Google Gemini API, Streamlit, and Plotly<br/>
     Discover Your Skills. Bridge the Gap. Build Your Future.
 </div>
 """, unsafe_allow_html=True)

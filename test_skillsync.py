@@ -202,6 +202,22 @@ def test_fallback_mode():
     print("Fallback / Offline mode tests passed!")
 
 
+def test_engine_status_and_security():
+    print("Testing Engine Status & Secret Protection...")
+    status_off = ai_engine.get_engine_status("")
+    assert status_off["connected"] is False
+    assert status_off["mode"] == "fallback"
+    assert "key" not in status_off
+
+    status_on = ai_engine.get_engine_status("mock_secret_key_abc_123")
+    assert status_on["connected"] is True
+    assert status_on["mode"] == "gemini_ai"
+    # Verify no secret key leakage in the dictionary
+    for val in status_on.values():
+        assert "mock_secret_key" not in str(val)
+    print("Engine Status & Secret Protection tests passed!")
+
+
 if __name__ == "__main__":
     test_input_validation()
     test_skill_readiness_calculation()
@@ -210,4 +226,6 @@ if __name__ == "__main__":
     test_ai_json_cleaning()
     test_plotly_figures()
     test_fallback_mode()
+    test_engine_status_and_security()
     print("\n[SUCCESS] ALL TESTS PASSED SUCCESSFULLY! 100% OPERATIONAL.")
+

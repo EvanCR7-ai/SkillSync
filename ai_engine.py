@@ -57,6 +57,41 @@ def get_api_key(provided_key: Optional[str] = None) -> str:
     return ""
 
 
+def get_engine_status(provided_key: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Safely determine the backend AI engine status WITHOUT exposing secrets.
+    Returns:
+        Dict with keys:
+          - connected (bool)
+          - mode (str: "gemini_ai" | "fallback")
+          - label (str)
+          - source_type (str)
+    """
+    resolved_key = get_api_key(provided_key)
+    if resolved_key:
+        source_type = "Server Environment"
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+                if str(st.secrets["GEMINI_API_KEY"]).strip() == resolved_key:
+                    source_type = "Streamlit Cloud Secrets"
+        except Exception:
+            pass
+        return {
+            "connected": True,
+            "mode": "gemini_ai",
+            "label": "Google Gemini AI Connected",
+            "source_type": source_type
+        }
+    return {
+        "connected": False,
+        "mode": "fallback",
+        "label": "Curated AI Fallback Engine Active",
+        "source_type": "Offline Heuristics"
+    }
+
+
+
 def clean_json_response(raw_text: str) -> Dict[str, Any]:
     """
     Robustly extract and parse JSON from LLM output, handling markdown fences,
