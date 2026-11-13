@@ -7,6 +7,7 @@ interactive 8-week roadmap milestone cards, and portfolio project blueprints.
 from typing import Dict, List, Any
 import plotly.graph_objects as go
 import streamlit as st
+import project_preview_engine
 
 
 def create_readiness_gauge(score: int, matched: int, partial: int, missing: int, total: int) -> go.Figure:
@@ -260,76 +261,8 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
 
 def render_portfolio_projects(projects: List[Dict[str, Any]]):
     """
-    Render the 3 portfolio projects (Beginner, Intermediate, Advanced) in a 3-column SaaS card grid.
-    Code snippets are cleanly housed in collapsed optional expanders.
+    Render portfolio projects in visual-first presentation with live interactive previews
+    and optional developer tools / source code.
     """
-    cols = st.columns(3)
+    project_preview_engine.render_all_portfolio_projects(projects)
 
-    for idx, p in enumerate(projects):
-        diff = p.get("difficulty", "Intermediate").capitalize()
-        title = p.get("title", f"Project {idx+1}")
-        desc = p.get("short_description", "")
-        problem = p.get("problem_solved", "")
-        techs = p.get("technologies_required", [])
-        skills_demo = p.get("skills_demonstrated", [])
-        time_est = p.get("estimated_completion_time", "1-2 weeks")
-        final_output = p.get("expected_final_output", "GitHub repository with live demo")
-
-        diff_class = diff.lower()
-        if diff_class not in ["beginner", "intermediate", "advanced"]:
-            diff_class = "intermediate"
-
-        tech_pills = "".join([f'<span class="skill-tag" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.3);">{t}</span>' for t in techs])
-        skill_pills = "".join([f'<span class="skill-tag">{s}</span>' for s in skills_demo])
-
-        with cols[idx]:
-            card_html = f"""
-            <div class="project-card {diff_class}">
-                <div>
-                    <div class="project-difficulty {diff_class}">
-                        ● {diff} Level Project • {time_est}
-                    </div>
-                    <div class="project-title">{title}</div>
-                    <div class="project-desc">{desc}</div>
-                    
-                    <div class="project-section-title">Problem Solved</div>
-                    <div style="font-size: 0.88rem; color: #CBD5E1; margin-bottom: 0.85rem; line-height: 1.5;">
-                        {problem}
-                    </div>
-
-                    <div class="project-section-title">Technologies Required</div>
-                    <div style="margin-bottom: 0.85rem;">{tech_pills}</div>
-
-                    <div class="project-section-title">Skills Demonstrated</div>
-                    <div style="margin-bottom: 0.85rem;">{skill_pills}</div>
-                </div>
-
-                <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08);">
-                    <div style="font-size: 0.78rem; text-transform: uppercase; color: #00D2FF; font-weight: 700; letter-spacing: 0.05em;">
-                        Deliverable / Output
-                    </div>
-                    <div style="font-size: 0.88rem; color: #F8FAFC; margin-top: 3px; font-weight: 500;">
-                        📦 {final_output}
-                    </div>
-                </div>
-            </div>
-            """
-            st.markdown(card_html, unsafe_allow_html=True)
-
-            # Optional Collapsed Architecture / Code Snippet Expander
-            with st.expander("💻 View Architecture & Code Blueprint", expanded=False):
-                tech_list_str = ", ".join(techs[:4]) if techs else "Python"
-                st.markdown(f"**Recommended Project Structure ({diff} Tier):**")
-                st.code(f"""# Project: {title}
-# Stack: {tech_list_str}
-
-├── src/
-│   ├── app.py           # Core logic / API endpoint
-│   ├── models/          # Data schemas & business logic
-│   └── utils/           # Helper scripts & data pipelines
-├── tests/
-│   └── test_core.py     # Unit verification tests
-├── requirements.txt     # Dependencies
-└── README.md            # Architecture & deployment docs
-""", language="text")
-                st.caption(f"Tip: Build with clean commits and deploy to Streamlit/Docker for recruiter impact.")

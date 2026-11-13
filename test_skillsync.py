@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 import utils
 import ai_engine
 import roadmap_generator
+import project_preview_engine
 
 
 def test_input_validation():
@@ -218,6 +219,69 @@ def test_engine_status_and_security():
     print("Engine Status & Secret Protection tests passed!")
 
 
+def test_project_preview_engine():
+    print("Testing Project Preview Engine (SkillSync 2.1)...")
+    # Test Frontend Project
+    p_fe = {
+        "title": "Interactive Task Board",
+        "difficulty": "Beginner",
+        "short_description": "Kanban board with drag and drop",
+        "problem_solved": "Task management",
+        "technologies_required": ["React", "Tailwind CSS"],
+        "skills_demonstrated": ["Component State", "DOM"],
+        "estimated_completion_time": "1 week",
+        "expected_final_output": "Deployed web app"
+    }
+    cat_fe = project_preview_engine.detect_project_category(p_fe)
+    assert cat_fe == "frontend"
+    html_fe = project_preview_engine.generate_live_preview_html(p_fe)
+    assert "<!DOCTYPE html>" in html_fe
+    assert "Interactive Task Board" in html_fe
+    src_fe = project_preview_engine.get_project_source_files(p_fe)
+    assert "index.html" in src_fe
+    assert "styles.css" in src_fe
+
+    # Test ML Project
+    p_ml = {
+        "title": "Customer Churn Prediction Engine",
+        "difficulty": "Intermediate",
+        "short_description": "Predict churn using random forest",
+        "problem_solved": "Customer retention",
+        "technologies_required": ["Python", "Scikit-Learn", "Pandas"],
+        "skills_demonstrated": ["Model Evaluation"],
+        "estimated_completion_time": "2 weeks",
+        "expected_final_output": "Interactive inference dashboard"
+    }
+    cat_ml = project_preview_engine.detect_project_category(p_ml)
+    assert cat_ml == "ml_datascience"
+    html_ml = project_preview_engine.generate_live_preview_html(p_ml)
+    assert "<!DOCTYPE html>" in html_ml
+    assert "Customer Churn Prediction Engine" in html_ml
+    src_ml = project_preview_engine.get_project_source_files(p_ml)
+    assert "app.py" in src_ml
+
+    # Test Backend Project
+    p_be = {
+        "title": "High-Concurrency Order Processing Service",
+        "difficulty": "Advanced",
+        "short_description": "Scalable REST API with Redis cache",
+        "problem_solved": "Order concurrency",
+        "technologies_required": ["FastAPI", "PostgreSQL", "Docker"],
+        "skills_demonstrated": ["API Design", "Transactions"],
+        "estimated_completion_time": "3 weeks",
+        "expected_final_output": "Containerized microservice"
+    }
+    cat_be = project_preview_engine.detect_project_category(p_be)
+    assert cat_be == "backend_api"
+    html_be = project_preview_engine.generate_live_preview_html(p_be)
+    assert "<!DOCTYPE html>" in html_be
+    assert "High-Concurrency Order Processing Service" in html_be
+    src_be = project_preview_engine.get_project_source_files(p_be)
+    assert "main.py" in src_be
+
+    print("Project Preview Engine tests passed!")
+
+
 if __name__ == "__main__":
     test_input_validation()
     test_skill_readiness_calculation()
@@ -227,5 +291,7 @@ if __name__ == "__main__":
     test_plotly_figures()
     test_fallback_mode()
     test_engine_status_and_security()
+    test_project_preview_engine()
     print("\n[SUCCESS] ALL TESTS PASSED SUCCESSFULLY! 100% OPERATIONAL.")
+
 
