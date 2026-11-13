@@ -631,3 +631,17 @@ Requirements:
 
     fresh = generate_fallback_career_analysis([], role, "10–15 hours", "Intermediate")
     return fresh["portfolio_projects"]
+
+
+if __name__ == "__main__":
+    # When Streamlit Community Cloud launches ai_engine.py as main module,
+    # delegate execution seamlessly to the primary Streamlit application UI in app.py.
+    import runpy
+    import sys
+    from pathlib import Path
+
+    sys.modules["ai_engine"] = sys.modules[__name__]
+    app_file = Path(__file__).resolve().parent / "app.py"
+    if app_file.exists():
+        runpy.run_path(str(app_file), run_name="__main__")
+
