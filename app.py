@@ -634,15 +634,20 @@ if st.session_state.current_page == "Dashboard":
         """)
 
     with col_s4:
+        prog_pct = int((completed_weeks / 8) * 100) if st.session_state.analysis_result else 0
         prog_str = f"{completed_weeks} / 8 Wks" if st.session_state.analysis_result else "0 / 8 Wks"
         utils.safe_render_html(f"""
         <div class="metric-obsidian">
             <div class="metric-header">
                 <span class="metric-icon-wrap">{icon_calendar}</span>
+                <span class="metric-badge-mini">{prog_pct}%</span>
             </div>
             <div class="metric-value" style="color: {gold_color};">{prog_str}</div>
             <div class="metric-label">Learning Progress</div>
-            <div class="metric-subtext">Milestones completed</div>
+            <div class="metric-mini-bar-wrap">
+                <div class="metric-mini-bar-fill" style="width: {prog_pct}%;"></div>
+            </div>
+            <div class="metric-subtext">Curriculum milestones</div>
         </div>
         """)
 
@@ -814,33 +819,46 @@ elif st.session_state.current_page == "Career Roadmap":
             st.error(f"Validation Error: {err_msg}")
         else:
             effective_key = ai_engine.get_api_key()
-            with st.spinner("Evaluating skill baseline and generating customized curriculum..."):
-                try:
-                    result = ai_engine.analyze_career_path(
-                        current_skills=combined_skills,
-                        target_role=resolved_role,
-                        study_hours=study_hours,
-                        experience_level=exp_level,
-                        api_key=effective_key
-                    )
-                    readiness = utils.calculate_skill_readiness(result.get("skills_analysis", []))
+            loading_box = st.empty()
+            with loading_box.container():
+                st.markdown("""
+                <div class="ai-loader-container">
+                    <div class="ai-spinner-wrap">
+                        <div class="ai-spinner-ring"></div>
+                        <div class="ai-spinner-pulse"></div>
+                    </div>
+                    <div class="ai-loader-status">Synthesizing Career Intelligence & Industry Curriculum...</div>
+                    <div class="ai-loader-subtext">Evaluating skills • Identifying gap competencies • Architecting 8-week roadmap</div>
+                </div>
+                """, unsafe_allow_html=True)
+            try:
+                result = ai_engine.analyze_career_path(
+                    current_skills=combined_skills,
+                    target_role=resolved_role,
+                    study_hours=study_hours,
+                    experience_level=exp_level,
+                    api_key=effective_key
+                )
+                readiness = utils.calculate_skill_readiness(result.get("skills_analysis", []))
 
-                    st.session_state.analysis_result = result
-                    st.session_state.readiness_data = readiness
-                    st.session_state.student_profile = {
-                        "skills_list": selected_skills,
-                        "custom_skills": custom_skills_input,
-                        "combined_skills": combined_skills,
-                        "target_role_choice": target_role_choice,
-                        "custom_role": custom_role_text,
-                        "target_role": resolved_role,
-                        "study_hours": study_hours,
-                        "experience_level": exp_level
-                    }
-                    st.toast("Career roadmap generated successfully!", icon=":material/check_circle:")
-                    st.rerun()
-                except Exception as ex:
-                    st.error(f"Error generating roadmap: {ex}")
+                st.session_state.analysis_result = result
+                st.session_state.readiness_data = readiness
+                st.session_state.student_profile = {
+                    "skills_list": selected_skills,
+                    "custom_skills": custom_skills_input,
+                    "combined_skills": combined_skills,
+                    "target_role_choice": target_role_choice,
+                    "custom_role": custom_role_text,
+                    "target_role": resolved_role,
+                    "study_hours": study_hours,
+                    "experience_level": exp_level
+                }
+                loading_box.empty()
+                st.toast("Career roadmap generated successfully!", icon=":material/check_circle:")
+                st.rerun()
+            except Exception as ex:
+                loading_box.empty()
+                st.error(f"Error generating roadmap: {ex}")
 
     # Display Roadmap Content if Available
     if st.session_state.analysis_result and st.session_state.student_profile:
@@ -900,18 +918,31 @@ elif st.session_state.current_page == "Career Roadmap":
             )
             if st.button("Regenerate Roadmap with AI", key="btn_regen_roadmap_page", icon=":material/auto_awesome:"):
                 effective_key = ai_engine.get_api_key()
-                with st.spinner("Regenerating curriculum..."):
-                    try:
-                        new_roadmap = ai_engine.regenerate_roadmap_ai(
-                            st.session_state.analysis_result,
-                            custom_regen_prompt,
-                            effective_key
-                        )
-                        st.session_state.analysis_result["roadmap"] = new_roadmap
-                        st.toast("Roadmap successfully refreshed!", icon=":material/check_circle:")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Failed to regenerate roadmap: {e}")
+                loading_box = st.empty()
+                with loading_box.container():
+                    st.markdown("""
+                    <div class="ai-loader-container">
+                        <div class="ai-spinner-wrap">
+                            <div class="ai-spinner-ring"></div>
+                            <div class="ai-spinner-pulse"></div>
+                        </div>
+                        <div class="ai-loader-status">Regenerating Curriculum & Project Portfolio...</div>
+                        <div class="ai-loader-subtext">Updating milestones • Re-aligning availability • Customizing deliverables</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                try:
+                    new_roadmap = ai_engine.regenerate_roadmap_ai(
+                        st.session_state.analysis_result,
+                        custom_regen_prompt,
+                        effective_key
+                    )
+                    st.session_state.analysis_result["roadmap"] = new_roadmap
+                    loading_box.empty()
+                    st.toast("Roadmap successfully refreshed!", icon=":material/check_circle:")
+                    st.rerun()
+                except Exception as e:
+                    loading_box.empty()
+                    st.error(f"Failed to regenerate roadmap: {e}")
     else:
         st.info("Configure your profile above and click **Generate My Career Roadmap** to view your customized 8-week timeline.")
 
@@ -1027,20 +1058,33 @@ elif st.session_state.current_page == "Resume Analyzer":
         if uploaded_resume is None:
             st.warning("Please upload a PDF or TXT resume file first.")
         else:
-            with st.spinner("Extracting text and benchmarking resume against ATS algorithms..."):
-                extracted_text = utils.extract_text_from_pdf(uploaded_resume)
-                if not extracted_text or len(extracted_text.strip()) < 30:
-                    st.error("Could not extract readable text from the uploaded file. Please ensure it is not an image-only scanned PDF.")
-                else:
-                    effective_key = ai_engine.get_api_key()
-                    ats_res = ai_engine.analyze_resume_ats(
-                        resume_text=extracted_text,
-                        job_description=custom_jd,
-                        target_role=target_role_for_ats,
-                        api_key=effective_key
-                    )
-                    st.session_state.resume_analysis = ats_res
-                    st.toast("Resume analysis complete!", icon=":material/check_circle:")
+            loading_box = st.empty()
+            with loading_box.container():
+                st.markdown("""
+                <div class="ai-loader-container">
+                    <div class="ai-spinner-wrap">
+                        <div class="ai-spinner-ring"></div>
+                        <div class="ai-spinner-pulse"></div>
+                    </div>
+                    <div class="ai-loader-status">Benchmarking Resume Against ATS Algorithms...</div>
+                    <div class="ai-loader-subtext">Extracting technical keywords • Calculating match score • Identifying missing competencies</div>
+                </div>
+                """, unsafe_allow_html=True)
+            extracted_text = utils.extract_text_from_pdf(uploaded_resume)
+            if not extracted_text or len(extracted_text.strip()) < 30:
+                loading_box.empty()
+                st.error("Could not extract readable text from the uploaded file. Please ensure it is not an image-only scanned PDF.")
+            else:
+                effective_key = ai_engine.get_api_key()
+                ats_res = ai_engine.analyze_resume_ats(
+                    resume_text=extracted_text,
+                    job_description=custom_jd,
+                    target_role=target_role_for_ats,
+                    api_key=effective_key
+                )
+                loading_box.empty()
+                st.session_state.resume_analysis = ats_res
+                st.toast("Resume analysis complete!", icon=":material/check_circle:")
 
     # Render ATS Results
     if st.session_state.resume_analysis:
@@ -1122,17 +1166,29 @@ elif st.session_state.current_page == "Mock Interview":
 
     if st.button("Generate Interview Questions", type="primary", icon=":material/record_voice_over:", use_container_width=True, key="btn_gen_interview"):
         effective_key = ai_engine.get_api_key()
-        with st.spinner("Preparing realistic interview questions for your profile..."):
-            questions = ai_engine.generate_mock_interview_questions(
-                target_role=interview_role,
-                experience_level=interview_exp,
-                category=interview_cat,
-                api_key=effective_key
-            )
-            st.session_state.mock_interview_questions = questions
-            st.session_state.mock_interview_eval = None
-            st.session_state.active_interview_idx = 0
-            st.toast("Interview questions ready!", icon=":material/check_circle:")
+        loading_box = st.empty()
+        with loading_box.container():
+            st.markdown("""
+            <div class="ai-loader-container">
+                <div class="ai-spinner-wrap">
+                    <div class="ai-spinner-ring"></div>
+                    <div class="ai-spinner-pulse"></div>
+                </div>
+                <div class="ai-loader-status">Preparing Technical Interview Scenarios...</div>
+                <div class="ai-loader-subtext">Calibrating role requirements • Selecting system design & algorithmic questions</div>
+            </div>
+            """, unsafe_allow_html=True)
+        questions = ai_engine.generate_mock_interview_questions(
+            target_role=interview_role,
+            experience_level=interview_exp,
+            category=interview_cat,
+            api_key=effective_key
+        )
+        loading_box.empty()
+        st.session_state.mock_interview_questions = questions
+        st.session_state.mock_interview_eval = None
+        st.session_state.active_interview_idx = 0
+        st.toast("Interview questions ready!", icon=":material/check_circle:")
 
     # Render Active Question & Answer Interface
     if st.session_state.mock_interview_questions:
@@ -1165,16 +1221,28 @@ elif st.session_state.current_page == "Mock Interview":
                 st.warning("Please provide a detailed response before submitting.")
             else:
                 effective_key = ai_engine.get_api_key()
-                with st.spinner("Evaluating your response against senior engineering criteria..."):
-                    eval_res = ai_engine.evaluate_interview_answer(
-                        question=q_item.get("question", ""),
-                        user_answer=candidate_answer,
-                        target_role=interview_role,
-                        experience_level=interview_exp,
-                        api_key=effective_key
-                    )
-                    st.session_state.mock_interview_eval = eval_res
-                    st.toast("Evaluation complete!", icon=":material/check_circle:")
+                loading_box = st.empty()
+                with loading_box.container():
+                    st.markdown("""
+                    <div class="ai-loader-container">
+                        <div class="ai-spinner-wrap">
+                            <div class="ai-spinner-ring"></div>
+                            <div class="ai-spinner-pulse"></div>
+                        </div>
+                        <div class="ai-loader-status">Evaluating Response Against Engineering Criteria...</div>
+                        <div class="ai-loader-subtext">Scoring technical depth • Assessing STAR framework • Formulating actionable feedback</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                eval_res = ai_engine.evaluate_interview_answer(
+                    question=q_item.get("question", ""),
+                    user_answer=candidate_answer,
+                    target_role=interview_role,
+                    experience_level=interview_exp,
+                    api_key=effective_key
+                )
+                loading_box.empty()
+                st.session_state.mock_interview_eval = eval_res
+                st.toast("Evaluation complete!", icon=":material/check_circle:")
 
         # Display Evaluation
         if st.session_state.mock_interview_eval:

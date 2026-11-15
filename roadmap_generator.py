@@ -69,7 +69,8 @@ def create_readiness_gauge(score: int, matched: int, partial: int, missing: int,
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=20, r=20, t=25, b=20),
         height=230,
-        font={'color': text_color, 'family': 'Inter'}
+        font={'color': text_color, 'family': 'Inter'},
+        transition={'duration': 650, 'easing': 'cubic-in-out'}
     )
     return fig
 
@@ -111,7 +112,8 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int, theme
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=10, r=10, t=10, b=30),
-        height=230
+        height=230,
+        transition={'duration': 500, 'easing': 'cubic-in-out'}
     )
     return fig
 
@@ -162,6 +164,7 @@ def create_category_distribution_bar(skills_analysis: List[Dict[str, Any]], them
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=10, r=20, t=20, b=20),
         height=max(200, len(cat_names) * 38),
+        transition={'duration': 500, 'easing': 'cubic-in-out'},
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -222,7 +225,8 @@ def create_ats_score_gauge(score: int, theme: str = "dark") -> go.Figure:
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=20, r=20, t=20, b=20),
         height=210,
-        font={'color': text_color, 'family': 'Inter'}
+        font={'color': text_color, 'family': 'Inter'},
+        transition={'duration': 650, 'easing': 'cubic-in-out'}
     )
     return fig
 
@@ -374,8 +378,14 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
         st.markdown(f"**Roadmap Progress Tracker:** `{completed_weeks} of {total_weeks} Weeks Completed ({progress_pct}%)`")
     with col_prog2:
         status_txt = "Curriculum Completed" if progress_pct == 100 else "In Progress"
-        st.info(status_txt)
+        if progress_pct == 100:
+            st.success(status_txt)
+        else:
+            st.info(status_txt)
     st.progress(progress_pct / 100.0)
+
+    if progress_pct == 100 and total_weeks > 0:
+        st.success("Milestone Complete: You have mastered all 8 weeks of your curriculum! You are ready to apply for target engineering roles.")
 
     for week in roadmap:
         w_num = week.get("week_number", 1)
@@ -395,6 +405,12 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
         expander_title = f"Week {w_num}{capstone_label}: {w_title} • {hours} hrs/week{done_label}"
         
         with st.expander(expander_title, expanded=(w_num in [1, 2])):
+            if is_done:
+                st.markdown(
+                    '<div class="badge-clean gold" style="margin-bottom: 0.75rem; display: inline-flex;">'
+                    'Milestone Completed</div>',
+                    unsafe_allow_html=True
+                )
             col1, col2 = st.columns([3, 2])
 
             with col1:
