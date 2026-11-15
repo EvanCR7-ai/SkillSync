@@ -16,12 +16,20 @@ import pandas as pd
 import plotly.graph_objects as go
 from dotenv import load_dotenv
 
+import importlib
 # Internal module imports
 import ai_engine
 import roadmap_generator
 import project_preview_engine
 import utils
 import icons
+
+# Ensure hot-reloaded modules in long-running Streamlit processes stay synchronized
+importlib.reload(ai_engine)
+importlib.reload(roadmap_generator)
+importlib.reload(project_preview_engine)
+importlib.reload(utils)
+importlib.reload(icons)
 
 # Load environment variables
 load_dotenv()

@@ -270,7 +270,7 @@ def render_career_overview_hero(prof: Dict[str, Any], analysis: Dict[str, Any], 
         </div>
     </div>
     """
-    st.markdown(hero_html, unsafe_allow_html=True)
+    utils.safe_render_html(hero_html)
 
 
 def render_career_insights_row(analysis: Dict[str, Any]):
@@ -301,7 +301,7 @@ def render_career_insights_row(analysis: Dict[str, Any]):
 
     with col_ins1:
         str_bullets = "".join([f"<li>{html.escape(s)}</li>" for s in strengths[:3]])
-        st.markdown(f"""
+        utils.safe_render_html(f"""
         <div class="insight-card strength">
             <div class="insight-card-header">
                 <span style="color: var(--status-success); font-weight: 800; font-size: 16px;">✓</span>
@@ -312,11 +312,11 @@ def render_career_insights_row(analysis: Dict[str, Any]):
                 <ul class="insight-card-list">{str_bullets}</ul>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     with col_ins2:
         imp_bullets = "".join([f"<li>{html.escape(s)}</li>" for s in improvements[:3]])
-        st.markdown(f"""
+        utils.safe_render_html(f"""
         <div class="insight-card improvement">
             <div class="insight-card-header">
                 <span style="color: var(--status-warning); font-weight: 800; font-size: 16px;">▲</span>
@@ -327,11 +327,11 @@ def render_career_insights_row(analysis: Dict[str, Any]):
                 <ul class="insight-card-list">{imp_bullets}</ul>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     with col_ins3:
         step_bullets = "".join([f"<li>{html.escape(s)}</li>" for s in next_steps[:3]])
-        st.markdown(f"""
+        utils.safe_render_html(f"""
         <div class="insight-card recommendation">
             <div class="insight-card-header">
                 <span style="color: var(--gold-primary); font-weight: 800; font-size: 16px;">➔</span>
@@ -342,7 +342,7 @@ def render_career_insights_row(analysis: Dict[str, Any]):
                 <ul class="insight-card-list">{step_bullets}</ul>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
 
 def render_career_milestones_stepper(completed_weeks: int, total_weeks: int = 8):
@@ -372,17 +372,17 @@ def render_career_milestones_stepper(completed_weeks: int, total_weeks: int = 8)
             status_class = "pending"
             status_badge = '<span style="color: var(--text-muted);">○ Upcoming</span>'
 
-        stepper_html += f'''
-        <div class="stepper-stage {status_class}">
-            <div class="stepper-stage-header">
-                <span class="stepper-stage-title">Stage {idx+1}: {s["title"]}</span>
-            </div>
-            <div class="stepper-stage-weeks">{s["weeks"]} • {s["desc"]}</div>
-            <div class="stepper-stage-status">{status_badge}</div>
-        </div>
-        '''
+        stepper_html += (
+            f'<div class="stepper-stage {status_class}">'
+            f'<div class="stepper-stage-header">'
+            f'<span class="stepper-stage-title">Stage {idx+1}: {s["title"]}</span>'
+            f'</div>'
+            f'<div class="stepper-stage-weeks">{s["weeks"]} • {s["desc"]}</div>'
+            f'<div class="stepper-stage-status">{status_badge}</div>'
+            f'</div>'
+        )
     stepper_html += '</div>'
-    st.markdown(stepper_html, unsafe_allow_html=True)
+    utils.safe_render_html(stepper_html)
 
 def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
     """
