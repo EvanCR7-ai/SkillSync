@@ -35,6 +35,16 @@
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: 'Manrope', 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Lucide Icon SVG Masks for Sidebar Navigation */
+  --icon-layout-dashboard: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20width%3D%227%22%20height%3D%229%22%20x%3D%223%22%20y%3D%223%22%20rx%3D%221%22/%3E%3Crect%20width%3D%227%22%20height%3D%225%22%20x%3D%2214%22%20y%3D%223%22%20rx%3D%221%22/%3E%3Crect%20width%3D%227%22%20height%3D%229%22%20x%3D%2214%22%20y%3D%2212%22%20rx%3D%221%22/%3E%3Crect%20width%3D%227%22%20height%3D%225%22%20x%3D%223%22%20y%3D%2216%22%20rx%3D%221%22/%3E%3C/svg%3E");
+  --icon-route: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%226%22%20cy%3D%2219%22%20r%3D%223%22/%3E%3Cpath%20d%3D%22M9%2019h8.5a3.5%203.5%200%200%200%200-7h-11a3.5%203.5%200%200%201%200-7H15%22/%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%225%22%20r%3D%223%22/%3E%3C/svg%3E");
+  --icon-chart-no-axes-combined: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%2016v5%22/%3E%3Cpath%20d%3D%22M16%2014v7%22/%3E%3Cpath%20d%3D%22M20%2010v11%22/%3E%3Cpath%20d%3D%22m22%203-8.646%208.646a.5.5%200%200%201-.708%200L9.354%208.354a.5.5%200%200%200-.707%200L2%2015%22/%3E%3Cpath%20d%3D%22M4%2018v3%22/%3E%3Cpath%20d%3D%22M8%2014v7%22/%3E%3C/svg%3E");
+  --icon-file-search: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M14%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V8z%22/%3E%3Cpolyline%20points%3D%2214%202%2014%208%2020%208%22/%3E%3Ccircle%20cx%3D%2211.5%22%20cy%3D%2214.5%22%20r%3D%222.5%22/%3E%3Cpath%20d%3D%22m13.3%2016.3%201.7%201.7%22/%3E%3C/svg%3E");
+  --icon-messages-square: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M14%209a2%202%200%200%201-2%200H6l-4%204V4c0-1.1.9-2%202-2h8a2%202%200%200%201%202%202z%22/%3E%3Cpath%20d%3D%22M18%209h2a2%202%200%200%201%202%202v11l-4-4h-6a2%202%200%200%201-2-2v-1%22/%3E%3C/svg%3E");
+  --icon-briefcase-business: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20width%3D%2220%22%20height%3D%2214%22%20x%3D%222%22%20y%3D%227%22%20rx%3D%222%22/%3E%3Cpath%20d%3D%22M16%2021V5a2%202%200%200%200-2-2h-4a2%202%200%200%200-2%202v16%22/%3E%3Cpath%20d%3D%22M12%2012v.01%22/%3E%3C/svg%3E");
+  --icon-book-open: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%203h6a4%204%200%200%201%204%204v14a3%203%200%200%200-3-3H2z%22/%3E%3Cpath%20d%3D%22M22%203h-6a4%204%200%200%200-4%204v14a3%203%200%200%201%203-3h7z%22/%3E%3C/svg%3E");
+  --icon-settings: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12.22%202h-.44a2%202%200%200%200-2%202v.18a2%202%200%200%201-1%201.73l-.43.25a2%202%200%200%201-2%200l-.15-.08a2%202%200%200%200-2.73.73l-.22.38a2%202%200%200%200%20.73%202.73l.15.1a2%202%200%200%201%201%201.72v.51a2%202%200%200%201-1%201.74l-.15.09a2%202%200%200%200-.73%202.73l.22.38a2%202%200%200%200%202.73.73l.15-.08a2%202%200%200%201%202%200l.43.25a2%202%200%200%201%201%201.73V20a2%202%200%200%200%202%202h.44a2%202%200%200%200%202-2v-.18a2%202%200%200%201%201-1.73l.43-.25a2%202%200%200%201%202%200l.15.08a2%202%200%200%200%202.73-.73l.22-.39a2%202%200%200%200-.73-2.73l-.15-.08a2%202%200%200%201-1-1.74v-.5a2%202%200%200%201%201-1.74l.15-.09a2%202%200%200%200%20.73-2.73l-.22-.38a2%202%200%200%200-2.73-.73l-.15.08a2%202%200%200%201-2%200l-.43-.25a2%202%200%200%201-1-1.73V4a2%202%200%200%200-2-2z%22/%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%223%22/%3E%3C/svg%3E");
 }
 
 /* Light Theme Variables */
@@ -138,42 +148,39 @@ p, .body-p {
 }
 
 /* ==========================================================================
-   Sidebar Styling (Enterprise Obsidian / Ivory)
+   Sidebar Architecture & Precision Geometry (260px Fixed Width)
    ========================================================================== */
-[data-testid="stSidebar"] {
+[data-testid="stSidebar"],
+[data-testid="stSidebar"] > div:first-child {
+  width: 260px !important;
+  min-width: 260px !important;
+  max-width: 265px !important;
   background-color: var(--bg-secondary) !important;
   border-right: 1px solid var(--border-color) !important;
-  padding-top: 1.5rem !important;
   font-family: var(--font-body);
 }
 
-/* Fix Material Icon ligatures in sidebar navigation */
-[data-testid="stIconMaterial"] {
-  font-family: 'Material Symbols Rounded' !important;
-  font-weight: normal !important;
-  font-style: normal !important;
-  line-height: 1 !important;
-  display: inline-block !important;
-  white-space: nowrap !important;
-  word-wrap: normal !important;
-  direction: ltr !important;
-  font-feature-settings: 'liga' 1 !important;
-  -webkit-font-feature-settings: 'liga' !important;
-  -webkit-font-smoothing: antialiased !important;
+[data-testid="stSidebarContent"] {
+  padding: 1.25rem 0.85rem 2rem 0.85rem !important;
+}
+
+/* Hide any stray material symbols inside sidebar */
+[data-testid="stSidebar"] [data-testid="stIconMaterial"] {
+  display: none !important;
 }
 
 /* Streamlit Logo & Icon System */
 [data-testid="stLogo"] {
   display: flex !important;
   align-items: center !important;
-  padding: 0.25rem 0.25rem 0.75rem 0.25rem !important;
+  padding: 0.25rem 0.25rem 0.5rem 0.25rem !important;
   margin-bottom: 0.5rem !important;
 }
 
 [data-testid="stLogo"] img {
   max-width: 100% !important;
   height: auto !important;
-  max-height: 52px !important;
+  max-height: 48px !important;
   object-fit: contain !important;
   border-radius: 6px !important;
 }
@@ -181,7 +188,15 @@ p, .body-p {
 .sidebar-brand-divider {
   height: 1px;
   background: var(--border-color);
-  margin: 0.75rem 0 1rem 0;
+  margin: 0.5rem 0 0.85rem 0;
+  opacity: 0.6;
+}
+
+.sidebar-group-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.75rem 0.25rem 0.4rem 0.25rem;
+  opacity: 0.4;
 }
 
 /* Global Application Header */
@@ -253,90 +268,181 @@ p, .body-p {
   text-transform: uppercase;
 }
 
-/* Sidebar Brand Header */
-.sidebar-brand-container {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.sidebar-logo-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: var(--gold-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #090909;
-  box-shadow: var(--shadow-gold);
-  flex-shrink: 0;
-}
-
-.sidebar-brand-name {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.sidebar-brand-tagline {
-  font-size: 0.72rem;
-  color: var(--gold-muted);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 /* Group Navigation Labels */
 .nav-group-header {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-top: 1.15rem;
-  margin-bottom: 0.35rem;
-  padding-left: 0.5rem;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+  margin-top: 0.85rem !important;
+  margin-bottom: 0.35rem !important;
+  padding-left: 0.65rem !important;
 }
 
-/* Navigation Button Styling */
+/* ==========================================================================
+   Navigation Button System (Lucide Vector Icons, Flex Rows, 44px Height)
+   ========================================================================== */
+[data-testid="stSidebar"] .stButton {
+  margin-bottom: 3px !important;
+}
+
 [data-testid="stSidebar"] .stButton > button {
   width: 100% !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
   display: flex !important;
+  flex-direction: row !important;
   align-items: center !important;
   justify-content: flex-start !important;
   text-align: left !important;
-  padding: 0.55rem 0.85rem !important;
-  border-radius: 6px !important;
-  font-size: 13.5px !important;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
   border: 1px solid transparent !important;
   background: transparent !important;
   color: var(--text-secondary) !important;
   transition: all 0.15s ease !important;
-  margin-bottom: 2px !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  gap: 0 !important;
 }
 
+/* Common Lucide Icon Pseudo-Element */
+[data-testid="stSidebar"] div[class*="st-key-nav_btn_"] button::before,
+[data-testid="stSidebar"] button[aria-label="Dashboard"]::before,
+[data-testid="stSidebar"] button[aria-label="Career Roadmap"]::before,
+[data-testid="stSidebar"] button[aria-label="Skill Gap Analysis"]::before,
+[data-testid="stSidebar"] button[aria-label="Resume Analyzer"]::before,
+[data-testid="stSidebar"] button[aria-label="Mock Interview"]::before,
+[data-testid="stSidebar"] button[aria-label="Project Recommendations"]::before,
+[data-testid="stSidebar"] button[aria-label="Learning Resources"]::before,
+[data-testid="stSidebar"] button[aria-label="Settings"]::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  margin-right: 12px !important;
+  flex-shrink: 0 !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  -webkit-mask-size: contain !important;
+  mask-size: contain !important;
+  background-color: currentColor !important;
+  transition: background-color 0.15s ease !important;
+}
+
+/* Individual Lucide Icon Mappings */
+div.st-key-nav_btn_dashboard button::before,
+[data-testid="stSidebar"] button[aria-label="Dashboard"]::before {
+  -webkit-mask-image: var(--icon-layout-dashboard) !important;
+  mask-image: var(--icon-layout-dashboard) !important;
+}
+
+div.st-key-nav_btn_career_roadmap button::before,
+[data-testid="stSidebar"] button[aria-label="Career Roadmap"]::before {
+  -webkit-mask-image: var(--icon-route) !important;
+  mask-image: var(--icon-route) !important;
+}
+
+div.st-key-nav_btn_skill_gap_analysis button::before,
+[data-testid="stSidebar"] button[aria-label="Skill Gap Analysis"]::before {
+  -webkit-mask-image: var(--icon-chart-no-axes-combined) !important;
+  mask-image: var(--icon-chart-no-axes-combined) !important;
+}
+
+div.st-key-nav_btn_resume_analyzer button::before,
+[data-testid="stSidebar"] button[aria-label="Resume Analyzer"]::before {
+  -webkit-mask-image: var(--icon-file-search) !important;
+  mask-image: var(--icon-file-search) !important;
+}
+
+div.st-key-nav_btn_mock_interview button::before,
+[data-testid="stSidebar"] button[aria-label="Mock Interview"]::before {
+  -webkit-mask-image: var(--icon-messages-square) !important;
+  mask-image: var(--icon-messages-square) !important;
+}
+
+div.st-key-nav_btn_project_recommendations button::before,
+[data-testid="stSidebar"] button[aria-label="Project Recommendations"]::before {
+  -webkit-mask-image: var(--icon-briefcase-business) !important;
+  mask-image: var(--icon-briefcase-business) !important;
+}
+
+div.st-key-nav_btn_learning_resources button::before,
+[data-testid="stSidebar"] button[aria-label="Learning Resources"]::before {
+  -webkit-mask-image: var(--icon-book-open) !important;
+  mask-image: var(--icon-book-open) !important;
+}
+
+div.st-key-nav_btn_settings button::before,
+[data-testid="stSidebar"] button[aria-label="Settings"]::before {
+  -webkit-mask-image: var(--icon-settings) !important;
+  mask-image: var(--icon-settings) !important;
+}
+
+/* Button Text Label */
+[data-testid="stSidebar"] .stButton > button p,
+[data-testid="stSidebar"] .stButton > button div[data-testid="stMarkdownContainer"] {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-align: left !important;
+  color: inherit !important;
+}
+
+/* Hover State */
 [data-testid="stSidebar"] .stButton > button:hover {
   background: var(--bg-card) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
 }
 
-/* Active Navigation Item */
-[data-testid="stSidebar"] .stButton > button[kind="primary"],
-[data-testid="stSidebar"] .nav-btn-active > button {
+/* Active State */
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
   background: var(--bg-card) !important;
-  color: var(--gold-champagne) !important;
+  color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
   border-left: 3px solid var(--gold-primary) !important;
   font-weight: 600 !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"]::before {
+  background-color: var(--gold-primary) !important;
+}
+
+/* Active State (Light Theme) */
+[data-theme="light"] [data-testid="stSidebar"] .stButton > button[kind="primary"],
+.stApp[data-theme="light"] [data-testid="stSidebar"] .stButton > button[kind="primary"] {
+  background: #FFFFFF !important;
+  color: #171717 !important;
+  border-color: var(--border-color) !important;
+  border-left: 3px solid var(--gold-primary) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+}
+[data-theme="light"] [data-testid="stSidebar"] .stButton > button[kind="primary"]::before,
+.stApp[data-theme="light"] [data-testid="stSidebar"] .stButton > button[kind="primary"]::before {
+  background-color: var(--gold-primary) !important;
+}
+
+/* Application Version Badge */
+.sidebar-app-version {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 0.65rem 0 0.25rem 0;
+  letter-spacing: 0.04em;
+  font-weight: 500;
 }
 
 /* Engine Status Box */

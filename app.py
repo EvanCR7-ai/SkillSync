@@ -144,6 +144,24 @@ def apply_active_theme():
             border-right: 1px solid #E5DED0 !important;
             color: #171717;
         }
+        [data-testid="stSidebar"] .stButton > button {
+            color: #77716A !important;
+        }
+        [data-testid="stSidebar"] .stButton > button:hover {
+            background: #FFFFFF !important;
+            color: #171717 !important;
+            border-color: #E5DED0 !important;
+        }
+        [data-testid="stSidebar"] .stButton > button[kind="primary"] {
+            background: #FFFFFF !important;
+            color: #171717 !important;
+            border-color: #E5DED0 !important;
+            border-left: 3px solid #B58B35 !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+        }
+        [data-testid="stSidebar"] .stButton > button[kind="primary"]::before {
+            background-color: #B58B35 !important;
+        }
         .hero-obsidian, .metric-obsidian, .panel-obsidian {
             background: #FFFFFF !important;
             border-color: #E5DED0 !important;
@@ -191,6 +209,23 @@ def apply_active_theme():
             border-right: 1px solid #303030 !important;
             color: #F8F5EC;
         }
+        [data-testid="stSidebar"] .stButton > button {
+            color: #A5A5A5 !important;
+        }
+        [data-testid="stSidebar"] .stButton > button:hover {
+            background: #171717 !important;
+            color: #F8F5EC !important;
+            border-color: #303030 !important;
+        }
+        [data-testid="stSidebar"] .stButton > button[kind="primary"] {
+            background: #171717 !important;
+            color: #FFFFFF !important;
+            border-color: #303030 !important;
+            border-left: 3px solid #D4AF37 !important;
+        }
+        [data-testid="stSidebar"] .stButton > button[kind="primary"]::before {
+            background-color: #F1D58A !important;
+        }
         .hero-obsidian, .metric-obsidian, .panel-obsidian {
             background: #171717 !important;
             border-color: #303030 !important;
@@ -216,35 +251,35 @@ def apply_active_theme():
 apply_active_theme()
 
 # ==============================================================================
-# ENTERPRISE SIDEBAR ARCHITECTURE (NO EMOJIS, LUCIDE & MATERIAL SYSTEM)
+# ENTERPRISE SIDEBAR ARCHITECTURE (LUCIDE SVG SYSTEM & ZERO TEXT LIGATURES)
 # ==============================================================================
 NAV_GROUPS = [
     {
         "group": "WORKSPACE",
         "items": [
-            ("Dashboard", ":material/dashboard:"),
-            ("Career Roadmap", ":material/route:"),
-            ("Skill Gap Analysis", ":material/bar_chart:"),
+            ("Dashboard", "layout-dashboard"),
+            ("Career Roadmap", "route"),
+            ("Skill Gap Analysis", "chart-no-axes-combined"),
         ]
     },
     {
         "group": "AI TOOLS",
         "items": [
-            ("Resume Analyzer", ":material/find_in_page:"),
-            ("Mock Interview", ":material/forum:"),
-            ("Project Recommendations", ":material/business_center:"),
+            ("Resume Analyzer", "file-search"),
+            ("Mock Interview", "messages-square"),
+            ("Project Recommendations", "briefcase-business"),
         ]
     },
     {
         "group": "RESOURCES",
         "items": [
-            ("Learning Resources", ":material/menu_book:"),
+            ("Learning Resources", "book-open"),
         ]
     },
     {
         "group": "PREFERENCES",
         "items": [
-            ("Settings", ":material/settings:"),
+            ("Settings", "settings"),
         ]
     }
 ]
@@ -254,32 +289,52 @@ with st.sidebar:
     gold_color = "#D4AF37" if is_dark else "#B58B35"
     gold_champagne = "#F1D58A" if is_dark else "#D9BD79"
 
-    # Official SkillSync Gold Brand Header
+    # TOP BRAND AREA
     if LOGO_PATH.exists():
-        st.markdown("<div class='sidebar-brand-divider'></div>", unsafe_allow_html=True)
+        st.image(str(LOGO_PATH), use_container_width=True)
+    st.markdown("<div class='sidebar-brand-divider'></div>", unsafe_allow_html=True)
 
-    # Grouped Navigation System
-    for group_data in NAV_GROUPS:
+    # Grouped Navigation System (Lucide Vector Icons, Pure Labels, Zero Text Ligatures)
+    for idx, group_data in enumerate(NAV_GROUPS):
+        if idx > 0:
+            st.markdown('<div class="sidebar-group-divider"></div>', unsafe_allow_html=True)
         st.markdown(f'<div class="nav-group-header">{group_data["group"]}</div>', unsafe_allow_html=True)
-        for item_name, icon_name in group_data["items"]:
+        for item_name, icon_key in group_data["items"]:
             is_active = (st.session_state.current_page == item_name)
+            slug = item_name.lower().replace(" ", "_")
+            btn_key = f"nav_btn_{slug}"
             if st.button(
                 item_name,
-                key=f"nav_btn_{item_name}",
+                key=btn_key,
                 type="primary" if is_active else "secondary",
-                icon=icon_name,
                 use_container_width=True
             ):
                 st.session_state.current_page = item_name
                 st.rerun()
 
-    st.markdown("<div style='height: 0.75rem;'></div>", unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-group-divider"></div>', unsafe_allow_html=True)
 
-    # Theme Switcher Control (Clean Dark Mode / Light Mode)
+    # BOTTOM AREA: User Profile, Theme Switcher, Version, Engine Status
+    target_role_display = "Candidate"
+    if st.session_state.student_profile:
+        target_role_display = st.session_state.student_profile.get("target_role", "Candidate")
+
+    user_icon_svg = icons.get_lucide_svg("user-round", size=16, color="#090909")
+    utils.safe_render_html(f"""
+    <div class="sidebar-profile-card">
+        <div class="sidebar-profile-avatar">{user_icon_svg}</div>
+        <div style="overflow: hidden;">
+            <div style="font-weight: 700; font-size: 13px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis;">Active Candidate</div>
+            <div style="font-size: 12px; color: {gold_champagne}; white-space: nowrap; text-overflow: ellipsis; font-weight: 500;">{html.escape(target_role_display)}</div>
+        </div>
+    </div>
+    """)
+
+    # Theme Switcher Control (Lucide Sun/Moon)
     theme_icon_svg = icons.get_lucide_svg("moon" if is_dark else "sun", size=14, color=gold_color)
     utils.safe_render_html(f"""
     <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0.25rem 0.25rem 0.25rem; font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">
-        <span>Theme</span>
+        <span>Theme Mode</span>
         <span>{theme_icon_svg}</span>
     </div>
     """)
@@ -314,24 +369,12 @@ with st.sidebar:
         </div>
         """)
 
-    # Candidate Profile Section at Sidebar Bottom
-    target_role_display = "Candidate"
-    if st.session_state.student_profile:
-        target_role_display = st.session_state.student_profile.get("target_role", "Candidate")
+    # Application Version
+    st.markdown('<div class="sidebar-app-version">SkillSync 2.0 • Obsidian Gold</div>', unsafe_allow_html=True)
 
-    user_icon_svg = icons.get_lucide_svg("user-round", size=16, color="#090909")
-    utils.safe_render_html(f"""
-    <div class="sidebar-profile-card">
-        <div class="sidebar-profile-avatar">{user_icon_svg}</div>
-        <div style="overflow: hidden;">
-            <div style="font-weight: 700; font-size: 13px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis;">Active Candidate</div>
-            <div style="font-size: 12px; color: {gold_champagne}; white-space: nowrap; text-overflow: ellipsis; font-weight: 500;">{html.escape(target_role_display)}</div>
-        </div>
-    </div>
-    """)
-
+    # Reset Analysis Action
     if st.session_state.analysis_result:
-        if st.button("Reset Analysis", icon=":material/refresh:", use_container_width=True):
+        if st.button("Reset Analysis", key="btn_sidebar_reset_analysis", use_container_width=True):
             st.session_state.analysis_result = None
             st.session_state.student_profile = None
             st.session_state.readiness_data = None
