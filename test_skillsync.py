@@ -317,6 +317,41 @@ def test_skill_gap_dataframe():
     print("Skill Gap DataFrame tests passed!")
 
 
+def test_resume_analyzer():
+    print("Testing AI Resume ATS Analyzer...")
+    mock_resume = """
+    Jane Doe
+    Data Scientist | Python Developer
+    Skills: Python, SQL, Pandas, NumPy, Scikit-Learn, Git
+    Experience: Built machine learning models and data pipelines.
+    Education: B.S. in Computer Science
+    Projects: Customer churn prediction engine, E-commerce recommendation system.
+    """
+    ats = ai_engine.analyze_resume_ats(mock_resume, "", "Data Scientist", api_key="")
+    assert "ats_score" in ats
+    assert 0 <= ats["ats_score"] <= 100
+    assert len(ats.get("matching_skills", [])) > 0
+    assert len(ats.get("strengths", [])) > 0
+    print(f"ATS Resume Analyzer test passed! Score: {ats['ats_score']}% ({ats['match_level']})")
+
+
+def test_mock_interview():
+    print("Testing AI Mock Interview Engine...")
+    questions = ai_engine.generate_mock_interview_questions("Data Scientist", "Intermediate", "Technical", api_key="")
+    assert isinstance(questions, list)
+    assert len(questions) > 0
+    first_q = questions[0].get("question", "")
+    assert len(first_q) > 10
+
+    # Test answer evaluation
+    eval_res = ai_engine.evaluate_interview_answer(first_q, "We calculate VIF to detect multicollinearity and apply ridge regularization.", "Data Scientist", "Intermediate", api_key="")
+    assert "score" in eval_res
+    assert 1 <= eval_res["score"] <= 10
+    assert "feedback" in eval_res
+    assert len(eval_res.get("strengths", [])) > 0
+    print(f"Mock Interview tests passed! Evaluation score: {eval_res['score']}/10")
+
+
 if __name__ == "__main__":
     test_input_validation()
     test_skill_readiness_calculation()
@@ -328,6 +363,8 @@ if __name__ == "__main__":
     test_engine_status_and_security()
     test_project_preview_engine()
     test_skill_gap_dataframe()
+    test_resume_analyzer()
+    test_mock_interview()
     print("\n[SUCCESS] ALL TESTS PASSED SUCCESSFULLY! 100% OPERATIONAL.")
 
 

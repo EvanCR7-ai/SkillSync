@@ -668,6 +668,340 @@ Requirements:
     return fresh["portfolio_projects"]
 
 
+# ==============================================================================
+# AI RESUME ANALYZER ENGINE
+# ==============================================================================
+
+def analyze_resume_ats(
+    resume_text: str,
+    job_description: str = "",
+    target_role: str = "Software Engineer",
+    api_key: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Perform deep ATS compatibility analysis, keyword gap detection, and actionable
+    resume optimization recommendations using Gemini AI or the heuristic ATS engine.
+    """
+    resolved_key = get_api_key(api_key)
+
+    if resolved_key and len(resume_text.strip()) > 30:
+        system_instruction = (
+            "You are an executive Technical Recruiter and ATS (Applicant Tracking System) optimization specialist. "
+            "Analyze the candidate's resume strictly against their target role and optional job description."
+        )
+        prompt = f"""
+Target Role: {target_role}
+Job Description: {job_description or "General industry standards for " + target_role}
+
+Resume Content:
+\"\"\"
+{resume_text[:4000]}
+\"\"\"
+
+Analyze the resume and return a JSON object with this exact schema:
+{{
+  "ats_score": integer (0 to 100),
+  "match_level": "High Match" | "Strong Potential" | "Moderate Match" | "Needs Improvement",
+  "matching_skills": ["string", "string"],
+  "missing_keywords": ["string", "string"],
+  "strengths": ["string", "string"],
+  "improvements": ["string", "string"],
+  "actionable_recommendations": ["string", "string"]
+}}
+"""
+        try:
+            raw_response = call_gemini_model(prompt, system_instruction, resolved_key)
+            parsed = clean_json_response(raw_response)
+            if "ats_score" in parsed and "matching_skills" in parsed:
+                parsed["source"] = "gemini_ai"
+                return parsed
+        except Exception:
+            pass
+
+    # Heuristic Fallback ATS Engine
+    resume_lower = resume_text.lower()
+    role_info = ROLE_CURRICULUM_DATA.get(target_role, DEFAULT_CURRICULUM)
+    core_skills = [s[0] for s in role_info.get("core_skills", [])]
+
+    # Keyword matching
+    matched = []
+    missing = []
+    for skill in core_skills:
+        # Check if words match
+        s_words = [w.lower() for w in re.split(r'[\s/&]+', skill) if len(w) > 2]
+        if any(w in resume_lower for w in s_words):
+            matched.append(skill)
+        else:
+            missing.append(skill)
+
+    # Section checklist
+    sections = ["experience", "education", "project", "skill", "certification"]
+    found_sections = [sec for sec in sections if sec in resume_lower]
+
+    # Score calculation
+    skill_ratio = len(matched) / max(len(core_skills), 1)
+    section_ratio = len(found_sections) / len(sections)
+    length_score = 1.0 if len(resume_text.split()) > 150 else 0.5
+    raw_score = int((skill_ratio * 60) + (section_ratio * 30) + (length_score * 10))
+    ats_score = max(35, min(95, raw_score))
+
+    if ats_score >= 80:
+        match_level = "High Match"
+    elif ats_score >= 65:
+        match_level = "Strong Potential"
+    elif ats_score >= 50:
+        match_level = "Moderate Match"
+    else:
+        match_level = "Needs Improvement"
+
+    strengths = []
+    if matched:
+        strengths.append(f"Demonstrates clear experience with core stack: {', '.join(matched[:3])}.")
+    if "project" in found_sections:
+        strengths.append("Contains dedicated project portfolio section validating practical skills.")
+    if "experience" in found_sections:
+        strengths.append("Chronological career history is clearly structured.")
+    if not strengths:
+        strengths.append("Clear educational background and foundational baseline.")
+
+    improvements = []
+    if missing:
+        improvements.append(f"Incorporate missing industry keywords: {', '.join(missing[:4])}.")
+    if "education" not in found_sections:
+        improvements.append("Ensure educational degrees and graduation milestones are explicitly stated.")
+    improvements.append("Quantify achievements using metrics (e.g. 'Improved API latency by 35%').")
+
+    recs = [
+        f"Add a dedicated 'Technical Skills' matrix highlighting {', '.join(missing[:3])}.",
+        "Include active GitHub repository links to live portfolio projects.",
+        "Ensure resume follows a single-column, standard ATS-friendly PDF structure."
+    ]
+
+    return {
+        "ats_score": ats_score,
+        "match_level": match_level,
+        "matching_skills": matched if matched else ["Foundational Problem Solving"],
+        "missing_keywords": missing if missing else ["Advanced Architecture", "System Design"],
+        "strengths": strengths,
+        "improvements": improvements,
+        "actionable_recommendations": recs,
+        "source": "heuristic_engine"
+    }
+
+
+# ==============================================================================
+# AI MOCK INTERVIEW ENGINE
+# ==============================================================================
+
+MOCK_INTERVIEW_QUESTIONS_DATABASE = {
+    "Data Scientist": [
+        {
+            "id": "ds_1",
+            "category": "Machine Learning & Modeling",
+            "question": "How do you detect and mitigate multicollinearity in a regression dataset, and what impact does it have on model interpretability?",
+            "expected_topics": ["VIF (Variance Inflation Factor)", "Correlation Matrix", "L2 Regularization (Ridge)", "PCA"]
+        },
+        {
+            "id": "ds_2",
+            "category": "Statistics & Experimentation",
+            "question": "Explain how you would design an A/B test for an e-commerce recommendation system. What statistical power, sample size, and pitfalls would you consider?",
+            "expected_topics": ["Hypothesis Testing", "p-values & Type I/II errors", "Sample Size Calculation", "Novelty Effect"]
+        },
+        {
+            "id": "ds_3",
+            "category": "Practical Data Engineering",
+            "question": "Suppose your training data has 40% missing values in a critical continuous feature. How do you decide whether to impute or drop it?",
+            "expected_topics": ["MCAR vs MAR vs MNAR", "KNN/Iterative Imputation", "Domain Analysis", "Indicator Columns"]
+        }
+    ],
+    "Frontend Developer": [
+        {
+            "id": "fe_1",
+            "category": "React Architecture & Performance",
+            "question": "Explain the difference between useMemo, useCallback, and React.memo. When would using them actually hurt performance?",
+            "expected_topics": ["Referential Equality", "Re-render cycles", "Garbage collection overhead", "Premature optimization"]
+        },
+        {
+            "id": "fe_2",
+            "category": "Web Performance & Core Web Vitals",
+            "question": "What is Largest Contentful Paint (LCP) and Cumulative Layout Shift (CLS), and what architectural steps do you take to optimize them?",
+            "expected_topics": ["Asset preloading", "Image dimensions & CDN", "Font display swap", "Code splitting"]
+        },
+        {
+            "id": "fe_3",
+            "category": "JavaScript Internals",
+            "question": "How does the JavaScript Event Loop handle microtasks versus macrotasks when executing async/await and Promises?",
+            "expected_topics": ["Call Stack", "Microtask Queue", "Event Loop tick", "Promise resolution"]
+        }
+    ],
+    "Backend Developer": [
+        {
+            "id": "be_1",
+            "category": "Database & Distributed Systems",
+            "question": "How do you design database indexes to optimize a query with multiple WHERE clauses and an ORDER BY? When do indexes become a liability?",
+            "expected_topics": ["Composite B-Tree index", "Index cardinality", "Write amplification", "Covering index"]
+        },
+        {
+            "id": "be_2",
+            "category": "API Architecture & Concurrency",
+            "question": "How do you ensure idempotency in high-concurrency payment and order processing endpoints?",
+            "expected_topics": ["Idempotency keys", "Distributed locks (Redis)", "Database transactions (ACID)", "Unique constraints"]
+        },
+        {
+            "id": "be_3",
+            "category": "Microservices & Reliability",
+            "question": "Describe how you implement the Circuit Breaker pattern and dead-letter queues to prevent cascading failures across microservices.",
+            "expected_topics": ["Failure thresholds", "Half-open state", "Retry backoff with jitter", "Dead-letter queues"]
+        }
+    ]
+}
+
+
+def generate_mock_interview_questions(
+    target_role: str = "Software Engineer",
+    experience_level: str = "Intermediate",
+    category: str = "Technical",
+    api_key: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """
+    Generate realistic, role-specific interview questions.
+    """
+    resolved_key = get_api_key(api_key)
+
+    if resolved_key:
+        system_instruction = "You are a Principal Software Engineering hiring manager conducting realistic technical interviews."
+        prompt = f"""
+Generate 3 realistic, high-quality interview questions for a {experience_level} candidate applying for: {target_role}.
+Interview focus: {category}.
+
+Return a JSON object with this exact structure:
+{{
+  "questions": [
+    {{
+      "id": "q1",
+      "category": "string",
+      "question": "string",
+      "expected_topics": ["topic1", "topic2"]
+    }}
+  ]
+}}
+"""
+        try:
+            raw_response = call_gemini_model(prompt, system_instruction, resolved_key)
+            parsed = clean_json_response(raw_response)
+            if "questions" in parsed and isinstance(parsed["questions"], list) and len(parsed["questions"]) > 0:
+                return parsed["questions"]
+        except Exception:
+            pass
+
+    # Curated Question Bank Fallback
+    bank = MOCK_INTERVIEW_QUESTIONS_DATABASE.get(target_role)
+    if not bank:
+        # Generic engineering bank
+        bank = [
+            {
+                "id": "gen_1",
+                "category": "System Architecture",
+                "question": f"Walk me through how you would architect a scalable, fault-tolerant backend system for {target_role}.",
+                "expected_topics": ["Load balancing", "Caching", "Database partitioning", "Observability"]
+            },
+            {
+                "id": "gen_2",
+                "category": "Practical Problem Solving",
+                "question": "Describe a challenging bug or performance bottleneck you encountered in production. How did you isolate and resolve it?",
+                "expected_topics": ["Profiling tools", "Root cause analysis", "Hypothesis testing", "Post-mortem"]
+            },
+            {
+                "id": "gen_3",
+                "category": "Best Practices & Testing",
+                "question": "How do you balance test coverage (unit vs integration vs e2e) against developer velocity in an agile engineering team?",
+                "expected_topics": ["Testing Pyramid", "Mocking & Stubs", "CI/CD integration", "Contract testing"]
+            }
+        ]
+    return bank
+
+
+def evaluate_interview_answer(
+    question: str,
+    user_answer: str,
+    target_role: str = "Software Engineer",
+    experience_level: str = "Intermediate",
+    api_key: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Evaluate the candidate's interview answer and provide scored feedback,
+    strengths, improvement areas, and a model exemplary answer.
+    """
+    resolved_key = get_api_key(api_key)
+
+    if resolved_key and len(user_answer.strip()) > 10:
+        system_instruction = "You are a seasoned Tech Interview Coach providing constructive, rigorous feedback."
+        prompt = f"""
+Role: {target_role} ({experience_level})
+Interview Question: {question}
+
+Candidate's Answer:
+\"\"\"
+{user_answer}
+\"\"\"
+
+Evaluate the answer thoroughly and return a JSON object with this exact structure:
+{{
+  "score": integer (1 to 10),
+  "feedback": "string summarizing response quality",
+  "strengths": ["string", "string"],
+  "improvement_areas": ["string", "string"],
+  "model_answer": "string containing an exemplary answer"
+}}
+"""
+        try:
+            raw_response = call_gemini_model(prompt, system_instruction, resolved_key)
+            parsed = clean_json_response(raw_response)
+            if "score" in parsed and "feedback" in parsed:
+                parsed["source"] = "gemini_ai"
+                return parsed
+        except Exception:
+            pass
+
+    # Heuristic Answer Evaluator Fallback
+    words = user_answer.strip().split()
+    word_count = len(words)
+
+    # Heuristic scoring based on depth and articulation
+    if word_count > 100:
+        base_score = 8
+    elif word_count > 50:
+        base_score = 7
+    elif word_count > 25:
+        base_score = 5
+    elif word_count > 5:
+        base_score = 4
+    else:
+        base_score = 2
+
+    strengths = [
+        "Directly addressed the core interview prompt.",
+        "Demonstrated working engineering terminology and logical flow."
+    ]
+    improvements = [
+        "Include concrete real-world production metrics or trade-offs.",
+        "Structure the answer using the STAR method (Situation, Task, Action, Result)."
+    ]
+    model_answer = (
+        "An exemplary answer begins with a clear high-level thesis, outlines the trade-offs of 2-3 architectural approaches, "
+        "and illustrates the solution with a concrete production example highlighting performance metrics and edge-case handling."
+    )
+
+    return {
+        "score": base_score,
+        "feedback": f"Strong conceptual effort with {word_count} words. Deepening specific production trade-offs will elevate your response to senior level.",
+        "strengths": strengths,
+        "improvement_areas": improvements,
+        "model_answer": model_answer,
+        "source": "heuristic_evaluator"
+    }
+
+
 if __name__ == "__main__":
     # When Streamlit Community Cloud launches ai_engine.py as main module,
     # delegate execution seamlessly to the primary Streamlit application UI in app.py.

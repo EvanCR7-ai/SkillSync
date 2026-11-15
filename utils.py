@@ -385,3 +385,43 @@ def generate_roadmap_pdf(
     doc.build(story)
     buffer.seek(0)
     return buffer.getvalue()
+
+
+def extract_text_from_pdf(file_bytes_or_buffer) -> str:
+    """
+    Extract readable text from an uploaded PDF resume or document.
+    Gracefully handles multi-page resumes, encoding, and formatting.
+    """
+    if file_bytes_or_buffer is None:
+        return ""
+
+    try:
+        from pypdf import PdfReader
+        if hasattr(file_bytes_or_buffer, "read"):
+            # Ensure seek(0) in case Streamlit already read it
+            if hasattr(file_bytes_or_buffer, "seek"):
+                file_bytes_or_buffer.seek(0)
+            reader = PdfReader(file_bytes_or_buffer)
+        else:
+            reader = PdfReader(io.BytesIO(file_bytes_or_buffer))
+
+        extracted_pages = []
+        for page in reader.pages:
+            t = page.extract_text()
+            if t:
+                extracted_pages.append(t)
+        return "\n\n".join(extracted_pages).strip()
+    except Exception as e:
+        # Fallback byte decoding if plain text was uploaded
+        try:
+            if hasattr(file_bytes_or_buffer, "getvalue"):
+                raw = file_bytes_or_buffer.getvalue()
+            elif hasattr(file_bytes_or_buffer, "read"):
+                if hasattr(file_bytes_or_buffer, "seek"):
+                    file_bytes_or_buffer.seek(0)
+                raw = file_bytes_or_buffer.read()
+            else:
+                raw = file_bytes_or_buffer
+            return raw.decode("utf-8", errors="ignore").strip()
+        except Exception:
+            return ""

@@ -6,19 +6,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg-deep: #070A13;
-  --bg-surface: #0E1424;
-  --bg-card: rgba(14, 20, 36, 0.72);
-  --bg-card-hover: rgba(22, 30, 54, 0.88);
-  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-deep: #080B16;
+  --bg-surface: #101629;
+  --bg-card: #141B30;
+  --bg-card-hover: #1A233D;
+  --bg-glass: rgba(20, 27, 48, 0.75);
   
-  --primary-glow: #6366F1;
-  --accent-cyan: #00D2FF;
-  --accent-blue: #38BDF8;
+  --primary-glow: #8B5CF6;
+  --accent-cyan: #22D3EE;
+  --accent-blue: #3B82F6;
   --accent-purple: #8B5CF6;
   --accent-violet: #7C3AED;
   --accent-pink: #EC4899;
-  --accent-emerald: #10B981;
+  --accent-emerald: #22C55E;
   --accent-amber: #F59E0B;
   --accent-rose: #EF4444;
   
@@ -28,12 +28,12 @@
   
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(139, 92, 246, 0.35);
-  --border-glow-cyan: rgba(0, 210, 255, 0.35);
+  --border-glow-cyan: rgba(34, 211, 238, 0.35);
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.25);
-  --shadow-glow-cyan: 0 0 25px rgba(0, 210, 255, 0.2);
+  --shadow-glow: 0 0 25px rgba(139, 92, 246, 0.25);
+  --shadow-glow-cyan: 0 0 25px rgba(34, 211, 238, 0.2);
 }
 
 /* ==========================================================================
@@ -752,4 +752,166 @@ div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* ==========================================================================
+   SkillSync 2.0 — Premium SaaS Design Extensions
+   ========================================================================== */
+
+/* Hero Gradient Card */
+.hero-gradient-card {
+  background: linear-gradient(135deg, rgba(20, 27, 48, 0.85) 0%, rgba(14, 20, 36, 0.95) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 30px rgba(139, 92, 246, 0.12);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hero-gradient-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #8B5CF6, #3B82F6, #22D3EE);
+}
+
+/* Premium Statistic Cards */
+.stat-card-premium {
+  background: rgba(20, 27, 48, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-premium:hover {
+  transform: translateY(-3px);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 15px rgba(139, 92, 246, 0.15);
+}
+
+.stat-card-premium .stat-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.stat-card-premium .stat-val {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.stat-card-premium .stat-lbl {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.35rem;
+}
+
+/* Vertical Timeline */
+.timeline-container {
+  position: relative;
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+}
+
+.timeline-milestone {
+  position: relative;
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  border-left: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+.timeline-milestone.completed {
+  border-left-color: #22C55E;
+}
+
+.timeline-node {
+  position: absolute;
+  left: -9px;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #101629;
+  border: 2px solid #8B5CF6;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+.timeline-milestone.completed .timeline-node {
+  background: #22C55E;
+  border-color: #22C55E;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+/* Sidebar User Profile Section */
+.nav-profile-footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(20, 27, 48, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8B5CF6, #22D3EE);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #FFFFFF;
+}
+
+/* Feature Spotlight & Resource Cards */
+.resource-tile {
+  background: rgba(20, 27, 48, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  height: 100%;
+}
+
+.resource-tile:hover {
+  border-color: rgba(34, 211, 238, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Interview & ATS Assessment Containers */
+.interview-question-box {
+  background: rgba(20, 27, 48, 0.75);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.interview-feedback-box {
+  background: rgba(16, 22, 41, 0.9);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-top: 1.25rem;
 }

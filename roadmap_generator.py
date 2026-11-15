@@ -16,17 +16,17 @@ import utils
 def create_readiness_gauge(score: int, matched: int, partial: int, missing: int, total: int) -> go.Figure:
     """
     Generate a modern, high-tech circular gauge chart using Plotly.
-    Designed with deep space midnight aesthetics, cyan/violet glowing indicators,
+    Designed with deep space midnight aesthetics (#080B16), cyan/purple glowing indicators,
     and smooth gradient thresholds.
     """
     if score >= 75:
-        bar_color = "#10B981"  # Emerald
+        bar_color = "#22C55E"  # Emerald Success
     elif score >= 50:
-        bar_color = "#00D2FF"  # Electric Cyan
+        bar_color = "#22D3EE"  # Electric Cyan
     elif score >= 30:
         bar_color = "#F59E0B"  # Vibrant Amber
     else:
-        bar_color = "#EF4444"  # Rose
+        bar_color = "#EF4444"  # Rose Danger
 
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
@@ -49,7 +49,7 @@ def create_readiness_gauge(score: int, matched: int, partial: int, missing: int,
             'steps': [
                 {'range': [0, 35], 'color': 'rgba(239, 68, 68, 0.18)'},
                 {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.18)'},
-                {'range': [70, 100], 'color': 'rgba(16, 185, 129, 0.18)'}
+                {'range': [70, 100], 'color': 'rgba(34, 197, 94, 0.18)'}
             ],
             'threshold': {
                 'line': {'color': "#8B5CF6", 'width': 3.5},
@@ -74,15 +74,15 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go
     Generate a sleek donut chart showing the breakdown of skills
     with modern SaaS neon palette.
     """
-    labels = ['Already Have', 'Partially Skilled', 'Need to Learn']
+    labels = ['Already Have', 'Needs Improvement', 'Need to Learn']
     values = [matched, partial, missing]
-    colors = ['#10B981', '#F59E0B', '#EF4444']
+    colors = ['#22C55E', '#F59E0B', '#EF4444']
 
     fig = go.Figure(data=[go.Pie(
         labels=labels,
         values=values,
         hole=0.64,
-        marker=dict(colors=colors, line=dict(color='#070A13', width=2.5)),
+        marker=dict(colors=colors, line=dict(color='#080B16', width=2.5)),
         textinfo='value+percent',
         hoverinfo='label+value',
         textfont=dict(color='#FFFFFF', size=12, family='Plus Jakarta Sans')
@@ -102,6 +102,107 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=10, r=10, t=10, b=30),
         height=230
+    )
+    return fig
+
+
+def create_category_distribution_bar(skills_analysis: List[Dict[str, Any]]) -> go.Figure:
+    """
+    Generate a horizontal bar chart showing the distribution of skills across tech domains.
+    """
+    categories: Dict[str, Dict[str, int]] = {}
+    for s in skills_analysis:
+        cat = str(s.get("category", "General")).strip()
+        status = str(s.get("status", "Need to Learn")).strip().lower()
+        if cat not in categories:
+            categories[cat] = {"matched": 0, "to_learn": 0}
+        if "have" in status or "already" in status:
+            categories[cat]["matched"] += 1
+        else:
+            categories[cat]["to_learn"] += 1
+
+    cat_names = list(categories.keys())
+    matched_vals = [categories[c]["matched"] for c in cat_names]
+    to_learn_vals = [categories[c]["to_learn"] for c in cat_names]
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        y=cat_names,
+        x=matched_vals,
+        name='Already Possess',
+        orientation='h',
+        marker=dict(color='#22C55E')
+    ))
+    fig.add_trace(go.Bar(
+        y=cat_names,
+        x=to_learn_vals,
+        name='Skills to Learn',
+        orientation='h',
+        marker=dict(color='#8B5CF6')
+    ))
+
+    fig.update_layout(
+        barmode='stack',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=10, r=20, t=20, b=20),
+        height=max(200, len(cat_names) * 38),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.3,
+            xanchor="center",
+            x=0.5,
+            font=dict(color='#94A3B8', size=11)
+        ),
+        xaxis=dict(
+            title=dict(text="Number of Skills", font=dict(color='#94A3B8', size=11)),
+            tickfont=dict(color='#94A3B8'),
+            gridcolor='rgba(255, 255, 255, 0.06)'
+        ),
+        yaxis=dict(
+            tickfont=dict(color='#F8FAFC', size=11),
+            autorange="reversed"
+        )
+    )
+    return fig
+
+
+def create_ats_score_gauge(score: int) -> go.Figure:
+    """
+    Generate an ATS compatibility radial gauge chart.
+    """
+    if score >= 80:
+        bar_color = "#22C55E"
+    elif score >= 65:
+        bar_color = "#22D3EE"
+    elif score >= 50:
+        bar_color = "#F59E0B"
+    else:
+        bar_color = "#EF4444"
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=score,
+        number={
+            'suffix': "%",
+            'font': {'size': 44, 'color': '#FFFFFF', 'family': 'Plus Jakarta Sans'}
+        },
+        gauge={
+            'axis': {'range': [0, 100], 'tickcolor': "rgba(255,255,255,0.2)", 'tickfont': {'color': '#94A3B8'}},
+            'bar': {'color': bar_color, 'thickness': 0.35},
+            'bgcolor': "rgba(255, 255, 255, 0.04)",
+            'borderwidth': 1,
+            'bordercolor': "rgba(255, 255, 255, 0.12)",
+            'threshold': {'line': {'color': "#8B5CF6", 'width': 3}, 'thickness': 0.8, 'value': score}
+        }
+    ))
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=210,
+        font={'color': '#F8FAFC'}
     )
     return fig
 
@@ -278,6 +379,9 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
                 for ex in exercises:
                     st.markdown(f"💻 {ex}")
 
+                mini_project = week.get("mini_project", f"Build a focused working prototype applying Week {w_num} skills.")
+                st.markdown(f"🚀 **Weekly Mini-Project:** `{mini_project}`")
+
                 outcome_html = (
                     '<div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38BDF8; border-radius: 8px;">'
                     '<span style="font-size: 0.78rem; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.04em;">Expected Milestone Outcome:</span><br/>'
@@ -322,4 +426,7 @@ def render_portfolio_projects(projects: List[Dict[str, Any]]):
     and optional developer tools / source code.
     """
     project_preview_engine.render_all_portfolio_projects(projects)
+
+
+render_vertical_timeline = render_roadmap_cards
 
