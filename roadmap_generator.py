@@ -13,46 +13,51 @@ import project_preview_engine
 import utils
 
 
-def create_readiness_gauge(score: int, matched: int, partial: int, missing: int, total: int) -> go.Figure:
+def create_readiness_gauge(score: int, matched: int, partial: int, missing: int, total: int, theme: str = "dark") -> go.Figure:
     """
-    Generate a modern, high-tech circular gauge chart using Plotly.
-    Designed with deep space midnight aesthetics (#080B16), cyan/purple glowing indicators,
-    and smooth gradient thresholds.
+    Generate a luxury circular gauge chart using Plotly.
+    Adapts dynamically to Obsidian Gold (#090909) and Ivory Gold (#F7F5EF).
     """
+    is_dark = (theme != "light")
+    text_color = "#F8F5EC" if is_dark else "#171717"
+    subtext_color = "#A5A5A5" if is_dark else "#77716A"
+    gold_accent = "#D4AF37" if is_dark else "#B58B35"
+    gold_champagne = "#F1D58A" if is_dark else "#D9BD79"
+
     if score >= 75:
-        bar_color = "#22C55E"  # Emerald Success
+        bar_color = "#22C55E"
     elif score >= 50:
-        bar_color = "#22D3EE"  # Electric Cyan
+        bar_color = gold_accent
     elif score >= 30:
-        bar_color = "#F59E0B"  # Vibrant Amber
+        bar_color = "#F59E0B"
     else:
-        bar_color = "#EF4444"  # Rose Danger
+        bar_color = "#EF4444"
 
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
         number={
             'suffix': "%",
-            'font': {'size': 48, 'color': '#FFFFFF', 'family': 'Plus Jakarta Sans, sans-serif'}
+            'font': {'size': 48, 'color': text_color, 'family': 'Manrope, Inter, sans-serif'}
         },
         gauge={
             'axis': {
                 'range': [0, 100],
                 'tickwidth': 1,
-                'tickcolor': "rgba(255,255,255,0.2)",
-                'tickfont': {'color': '#94A3B8', 'family': 'Plus Jakarta Sans'}
+                'tickcolor': "rgba(165,165,165,0.2)",
+                'tickfont': {'color': subtext_color, 'family': 'Inter'}
             },
             'bar': {'color': bar_color, 'thickness': 0.3},
-            'bgcolor': "rgba(255, 255, 255, 0.04)",
+            'bgcolor': "rgba(255, 255, 255, 0.04)" if is_dark else "rgba(0, 0, 0, 0.03)",
             'borderwidth': 1,
-            'bordercolor': "rgba(255, 255, 255, 0.12)",
+            'bordercolor': "rgba(255, 255, 255, 0.12)" if is_dark else "rgba(0, 0, 0, 0.08)",
             'steps': [
-                {'range': [0, 35], 'color': 'rgba(239, 68, 68, 0.18)'},
-                {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.18)'},
-                {'range': [70, 100], 'color': 'rgba(34, 197, 94, 0.18)'}
+                {'range': [0, 35], 'color': 'rgba(239, 68, 68, 0.14)'},
+                {'range': [35, 70], 'color': 'rgba(245, 158, 11, 0.14)'},
+                {'range': [70, 100], 'color': 'rgba(34, 197, 94, 0.14)'}
             ],
             'threshold': {
-                'line': {'color': "#8B5CF6", 'width': 3.5},
+                'line': {'color': gold_accent, 'width': 3.5},
                 'thickness': 0.82,
                 'value': score
             }
@@ -64,16 +69,21 @@ def create_readiness_gauge(score: int, matched: int, partial: int, missing: int,
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=20, r=20, t=25, b=20),
         height=230,
-        font={'color': '#F8FAFC', 'family': 'Plus Jakarta Sans'}
+        font={'color': text_color, 'family': 'Inter'}
     )
     return fig
 
 
-def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go.Figure:
+def create_skill_breakdown_donut(matched: int, partial: int, missing: int, theme: str = "dark") -> go.Figure:
     """
     Generate a sleek donut chart showing the breakdown of skills
-    with modern SaaS neon palette.
+    with luxury gold accents.
     """
+    is_dark = (theme != "light")
+    text_color = "#F8F5EC" if is_dark else "#171717"
+    subtext_color = "#A5A5A5" if is_dark else "#77716A"
+    gold_accent = "#D4AF37" if is_dark else "#B58B35"
+
     labels = ['Already Have', 'Needs Improvement', 'Need to Learn']
     values = [matched, partial, missing]
     colors = ['#22C55E', '#F59E0B', '#EF4444']
@@ -82,10 +92,10 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go
         labels=labels,
         values=values,
         hole=0.64,
-        marker=dict(colors=colors, line=dict(color='#080B16', width=2.5)),
+        marker=dict(colors=colors, line=dict(color='#090909' if is_dark else '#FFFFFF', width=2.5)),
         textinfo='value+percent',
         hoverinfo='label+value',
-        textfont=dict(color='#FFFFFF', size=12, family='Plus Jakarta Sans')
+        textfont=dict(color='#FFFFFF', size=12, family='Inter')
     )])
 
     fig.update_layout(
@@ -96,7 +106,7 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go
             y=-0.28,
             xanchor="center",
             x=0.5,
-            font=dict(color='#94A3B8', size=11, family='Plus Jakarta Sans')
+            font=dict(color=subtext_color, size=11, family='Inter')
         ),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -106,10 +116,15 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go
     return fig
 
 
-def create_category_distribution_bar(skills_analysis: List[Dict[str, Any]]) -> go.Figure:
+def create_category_distribution_bar(skills_analysis: List[Dict[str, Any]], theme: str = "dark") -> go.Figure:
     """
     Generate a horizontal bar chart showing the distribution of skills across tech domains.
     """
+    is_dark = (theme != "light")
+    text_color = "#F8F5EC" if is_dark else "#171717"
+    subtext_color = "#A5A5A5" if is_dark else "#77716A"
+    gold_accent = "#D4AF37" if is_dark else "#B58B35"
+
     categories: Dict[str, Dict[str, int]] = {}
     for s in skills_analysis:
         cat = str(s.get("category", "General")).strip()
@@ -138,7 +153,7 @@ def create_category_distribution_bar(skills_analysis: List[Dict[str, Any]]) -> g
         x=to_learn_vals,
         name='Skills to Learn',
         orientation='h',
-        marker=dict(color='#8B5CF6')
+        marker=dict(color=gold_accent)
     ))
 
     fig.update_layout(
@@ -153,29 +168,34 @@ def create_category_distribution_bar(skills_analysis: List[Dict[str, Any]]) -> g
             y=-0.3,
             xanchor="center",
             x=0.5,
-            font=dict(color='#94A3B8', size=11)
+            font=dict(color=subtext_color, size=11, family='Inter')
         ),
         xaxis=dict(
-            title=dict(text="Number of Skills", font=dict(color='#94A3B8', size=11)),
-            tickfont=dict(color='#94A3B8'),
-            gridcolor='rgba(255, 255, 255, 0.06)'
+            title=dict(text="Number of Skills", font=dict(color=subtext_color, size=11)),
+            tickfont=dict(color=subtext_color),
+            gridcolor='rgba(255, 255, 255, 0.06)' if is_dark else 'rgba(0, 0, 0, 0.06)'
         ),
         yaxis=dict(
-            tickfont=dict(color='#F8FAFC', size=11),
+            tickfont=dict(color=text_color, size=11),
             autorange="reversed"
         )
     )
     return fig
 
 
-def create_ats_score_gauge(score: int) -> go.Figure:
+def create_ats_score_gauge(score: int, theme: str = "dark") -> go.Figure:
     """
-    Generate an ATS compatibility radial gauge chart.
+    Generate an ATS compatibility radial gauge chart with luxury gold styling.
     """
+    is_dark = (theme != "light")
+    text_color = "#F8F5EC" if is_dark else "#171717"
+    subtext_color = "#A5A5A5" if is_dark else "#77716A"
+    gold_accent = "#D4AF37" if is_dark else "#B58B35"
+
     if score >= 80:
         bar_color = "#22C55E"
     elif score >= 65:
-        bar_color = "#22D3EE"
+        bar_color = gold_accent
     elif score >= 50:
         bar_color = "#F59E0B"
     else:
@@ -186,15 +206,15 @@ def create_ats_score_gauge(score: int) -> go.Figure:
         value=score,
         number={
             'suffix': "%",
-            'font': {'size': 44, 'color': '#FFFFFF', 'family': 'Plus Jakarta Sans'}
+            'font': {'size': 44, 'color': text_color, 'family': 'Manrope, Inter'}
         },
         gauge={
-            'axis': {'range': [0, 100], 'tickcolor': "rgba(255,255,255,0.2)", 'tickfont': {'color': '#94A3B8'}},
+            'axis': {'range': [0, 100], 'tickcolor': "rgba(165,165,165,0.2)", 'tickfont': {'color': subtext_color}},
             'bar': {'color': bar_color, 'thickness': 0.35},
-            'bgcolor': "rgba(255, 255, 255, 0.04)",
+            'bgcolor': "rgba(255, 255, 255, 0.04)" if is_dark else "rgba(0, 0, 0, 0.03)",
             'borderwidth': 1,
-            'bordercolor': "rgba(255, 255, 255, 0.12)",
-            'threshold': {'line': {'color': "#8B5CF6", 'width': 3}, 'thickness': 0.8, 'value': score}
+            'bordercolor': "rgba(255, 255, 255, 0.12)" if is_dark else "rgba(0, 0, 0, 0.08)",
+            'threshold': {'line': {'color': gold_accent, 'width': 3}, 'thickness': 0.8, 'value': score}
         }
     ))
     fig.update_layout(
@@ -202,7 +222,7 @@ def create_ats_score_gauge(score: int) -> go.Figure:
         plot_bgcolor='rgba(0,0,0,0)',
         margin=dict(l=20, r=20, t=20, b=20),
         height=210,
-        font={'color': '#F8FAFC'}
+        font={'color': text_color, 'family': 'Inter'}
     )
     return fig
 

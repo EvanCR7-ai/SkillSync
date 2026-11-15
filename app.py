@@ -45,6 +45,9 @@ load_css()
 # ==============================================================================
 # SESSION STATE INITIALIZATION
 # ==============================================================================
+if "theme" not in st.session_state:
+    st.session_state.theme = "dark"
+
 if "analysis_result" not in st.session_state:
     st.session_state.analysis_result = None
 
@@ -70,6 +73,109 @@ if "active_interview_idx" not in st.session_state:
     st.session_state.active_interview_idx = 0
 
 
+# Apply Dynamic Theme CSS overrides
+def apply_active_theme():
+    if st.session_state.get("theme", "dark") == "light":
+        st.markdown("""
+        <style>
+        :root, .stApp {
+            --bg-primary: #F7F5EF !important;
+            --bg-secondary: #F0EDE5 !important;
+            --bg-card: #FFFFFF !important;
+            --bg-card-elevated: #FAF8F2 !important;
+            --gold-primary: #B58B35 !important;
+            --gold-champagne: #D9BD79 !important;
+            --gold-muted: #8E6D24 !important;
+            --text-primary: #171717 !important;
+            --text-secondary: #77716A !important;
+            --text-muted: #9E988F !important;
+            --border-color: #E5DED0 !important;
+            --border-gold: rgba(181, 139, 53, 0.4) !important;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+            --shadow-gold: 0 0 15px rgba(181, 139, 53, 0.12) !important;
+            background-color: #F7F5EF !important;
+            color: #171717 !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #F0EDE5 !important;
+            border-right: 1px solid #E5DED0 !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: #171717;
+        }
+        .hero-obsidian, .metric-obsidian, .panel-obsidian {
+            background: #FFFFFF !important;
+            border-color: #E5DED0 !important;
+        }
+        .hero-title, .metric-value {
+            color: #171717 !important;
+        }
+        .hero-subtitle, .metric-label {
+            color: #77716A !important;
+        }
+        .stTextInput input, .stSelectbox [data-baseweb="select"], .stTextArea textarea {
+            background-color: #FFFFFF !important;
+            border-color: #E5DED0 !important;
+            color: #171717 !important;
+        }
+        div[data-testid="stExpander"] {
+            background: #FFFFFF !important;
+            border-color: #E5DED0 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <style>
+        :root, .stApp {
+            --bg-primary: #090909 !important;
+            --bg-secondary: #111111 !important;
+            --bg-card: #171717 !important;
+            --bg-card-elevated: #202020 !important;
+            --gold-primary: #D4AF37 !important;
+            --gold-champagne: #F1D58A !important;
+            --gold-muted: #A88735 !important;
+            --text-primary: #F8F5EC !important;
+            --text-secondary: #A5A5A5 !important;
+            --text-muted: #737373 !important;
+            --border-color: #303030 !important;
+            --border-gold: rgba(212, 175, 55, 0.4) !important;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+            --shadow-gold: 0 0 15px rgba(212, 175, 55, 0.15) !important;
+            background-color: #090909 !important;
+            color: #F8F5EC !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #111111 !important;
+            border-right: 1px solid #303030 !important;
+        }
+        [data-testid="stSidebar"] * {
+            color: #F8F5EC;
+        }
+        .hero-obsidian, .metric-obsidian, .panel-obsidian {
+            background: #171717 !important;
+            border-color: #303030 !important;
+        }
+        .hero-title, .metric-value {
+            color: #F8F5EC !important;
+        }
+        .hero-subtitle, .metric-label {
+            color: #A5A5A5 !important;
+        }
+        .stTextInput input, .stSelectbox [data-baseweb="select"], .stTextArea textarea {
+            background-color: #171717 !important;
+            border-color: #303030 !important;
+            color: #F8F5EC !important;
+        }
+        div[data-testid="stExpander"] {
+            background: #171717 !important;
+            border-color: #303030 !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+apply_active_theme()
+
 # ==============================================================================
 # SIDEBAR NAVIGATION & ENGINE STATUS
 # ==============================================================================
@@ -85,18 +191,37 @@ NAV_ITEMS = [
 ]
 
 with st.sidebar:
-    # Logo & Branding Header
-    utils.safe_render_html("""
-    <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem;">
-        <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #8B5CF6, #22D3EE); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);">
-            <span style="font-size: 1.5rem;">⚡</span>
+    is_dark = (st.session_state.theme == "dark")
+    gold_color = "#D4AF37" if is_dark else "#B58B35"
+    gold_champagne = "#F1D58A" if is_dark else "#D9BD79"
+    brand_subtext = "#A5A5A5" if is_dark else "#77716A"
+
+    # Logo & Branding Header (Obsidian Gold)
+    utils.safe_render_html(f"""
+    <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.85rem;">
+        <div style="width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, {gold_color}, {gold_champagne}); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);">
+            <span style="font-size: 1.35rem; color: #090909; font-weight: 900;">⚡</span>
         </div>
         <div>
-            <div style="font-size: 1.35rem; font-weight: 900; background: linear-gradient(135deg, #FFFFFF, #22D3EE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em;">SkillSync 2.0</div>
-            <div style="font-size: 0.76rem; color: #94A3B8; font-weight: 500;">Your AI Career Mentor</div>
+            <div style="font-size: 1.35rem; font-weight: 800; font-family: 'Manrope', sans-serif; letter-spacing: -0.02em;">SkillSync <span style="color: {gold_color};">2.0</span></div>
+            <div style="font-size: 0.72rem; color: {brand_subtext}; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">YOUR PERSONAL AI CAREER MENTOR</div>
         </div>
     </div>
     """)
+
+    # Theme Switcher Control
+    theme_choice = st.radio(
+        "Theme Switcher",
+        options=["🌙 Obsidian Dark", "☀️ Ivory Light"],
+        index=0 if is_dark else 1,
+        horizontal=True,
+        key="theme_radio_selector",
+        label_visibility="collapsed"
+    )
+    selected_theme = "dark" if "Dark" in theme_choice else "light"
+    if selected_theme != st.session_state.theme:
+        st.session_state.theme = selected_theme
+        st.rerun()
 
     st.markdown("---")
 
@@ -140,12 +265,17 @@ with st.sidebar:
     if st.session_state.student_profile:
         target_role_display = st.session_state.student_profile.get("target_role", "Software Engineer")
 
+    card_bg = "#171717" if is_dark else "#FFFFFF"
+    card_border = "#303030" if is_dark else "#E5DED0"
+    role_color = "#F1D58A" if is_dark else "#B58B35"
+    text_main = "#F8F5EC" if is_dark else "#171717"
+
     utils.safe_render_html(f"""
-    <div class="nav-profile-footer">
-        <div class="nav-profile-avatar">AI</div>
+    <div style="background: {card_bg}; border: 1px solid {card_border}; border-radius: 10px; padding: 0.75rem 0.9rem; display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem;">
+        <div style="width: 34px; height: 34px; border-radius: 50%; background: {gold_color}; color: #090909; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;">AI</div>
         <div style="overflow: hidden;">
-            <div style="font-weight: 700; font-size: 0.85rem; color: #FFFFFF; white-space: nowrap; text-overflow: ellipsis;">Active Candidate</div>
-            <div style="font-size: 0.75rem; color: #22D3EE; white-space: nowrap; text-overflow: ellipsis;">{html.escape(target_role_display)}</div>
+            <div style="font-weight: 700; font-size: 0.84rem; color: {text_main}; white-space: nowrap; text-overflow: ellipsis;">Active Candidate</div>
+            <div style="font-size: 0.75rem; color: {role_color}; white-space: nowrap; text-overflow: ellipsis; font-weight: 600;">{html.escape(target_role_display)}</div>
         </div>
     </div>
     """)
@@ -207,29 +337,30 @@ EXPERIENCE_LEVELS = [
 # PAGE 1: 📊 DASHBOARD
 # ==============================================================================
 if st.session_state.current_page == "📊 Dashboard":
+    is_dark = (st.session_state.theme == "dark")
+    gold_color = "#D4AF37" if is_dark else "#B58B35"
+    champagne_color = "#F1D58A" if is_dark else "#D9BD79"
+    text_muted = "#A5A5A5" if is_dark else "#77716A"
+
     # Hero Card
     col_hero_text, col_hero_visual = st.columns([3, 2])
     with col_hero_text:
         utils.safe_render_html("""
-        <div style="padding: 1.5rem 0 1rem 0;">
-            <div style="display: inline-block; padding: 0.35rem 0.85rem; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 999px; color: #22D3EE; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">
-                ✨ Next-Gen AI Career Mentor
-            </div>
-            <h1 style="font-size: 2.85rem; font-weight: 900; line-height: 1.15; margin-bottom: 1rem; background: linear-gradient(135deg, #FFFFFF 30%, #22D3EE 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.03em;">
-                Build Your Future with AI
-            </h1>
-            <p style="font-size: 1.05rem; color: #94A3B8; line-height: 1.6; max-width: 580px; margin-bottom: 1.5rem;">
-                Discover your potential, identify critical engineering skill gaps, and create a tailored 8-week roadmap to land your dream technical role.
+        <div class="hero-obsidian">
+            <div class="hero-pill">YOUR PERSONAL AI CAREER MENTOR</div>
+            <h1 class="hero-title">Build Your Future.<br>Master Your Career.</h1>
+            <p class="hero-subtitle">
+                Turn your ambitions into achievements with personalized AI career roadmaps, intelligent skill analysis, and structured learning recommendations.
             </p>
         </div>
         """)
         col_btn1, col_btn2 = st.columns([1, 1])
         with col_btn1:
-            if st.button("🚀 Generate My Career Roadmap", key="dash_hero_cta", use_container_width=True):
+            if st.button("🚀 Generate Career Roadmap", key="dash_hero_cta", use_container_width=True):
                 st.session_state.current_page = "🗺️ Career Roadmap"
                 st.rerun()
         with col_btn2:
-            if st.button("✨ Explore AI Features", key="dash_hero_features", use_container_width=True):
+            if st.button("✨ Explore Platform", key="dash_hero_features", use_container_width=True):
                 st.session_state.current_page = "🔍 Skill Gap Analysis"
                 st.rerun()
 
@@ -245,21 +376,22 @@ if st.session_state.current_page == "📊 Dashboard":
                 matched=matched_val,
                 partial=st.session_state.readiness_data.get("partial", 0),
                 missing=missing_val,
-                total=st.session_state.readiness_data.get("total", 0)
+                total=st.session_state.readiness_data.get("total", 0),
+                theme=st.session_state.theme
             )
             st.plotly_chart(gauge_fig, use_container_width=True)
         else:
-            utils.safe_render_html("""
-            <div class="hero-gradient-card" style="text-align: center; padding: 2rem;">
-                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎯</div>
-                <div style="font-size: 1.25rem; font-weight: 800; color: #FFFFFF;">Personalized Career Intelligence</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; margin-top: 0.5rem; line-height: 1.5;">
-                    Generate an analysis to benchmark your current skills against industry hiring bars.
+            utils.safe_render_html(f"""
+            <div class="hero-obsidian" style="text-align: center; padding: 2.25rem 1.5rem; height: 100%;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem; color: {gold_color};">🎯</div>
+                <div style="font-size: 1.25rem; font-weight: 800; font-family: 'Manrope', sans-serif;">Personalized Career Intelligence</div>
+                <div style="font-size: 0.88rem; color: {text_muted}; margin-top: 0.5rem; line-height: 1.5;">
+                    Generate an analysis to benchmark your current skills against industry hiring bars with Obsidian Gold precision.
                 </div>
             </div>
             """)
 
-    st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
     # 4 Statistic Cards Grid
     col_s1, col_s2, col_s3, col_s4 = st.columns(4)
@@ -276,44 +408,44 @@ if st.session_state.current_page == "📊 Dashboard":
         score_str = f"{score_val}%" if st.session_state.readiness_data else "—"
         cat_str = st.session_state.readiness_data.get("category", "Pending Assessment") if st.session_state.readiness_data else "Assessment Required"
         utils.safe_render_html(f"""
-        <div class="stat-card-premium">
-            <span class="stat-icon">🎯</span>
-            <div class="stat-val" style="color: #22D3EE;">{score_str}</div>
-            <div class="stat-lbl">Career Readiness Score</div>
-            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">{cat_str}</div>
+        <div class="metric-obsidian">
+            <div class="metric-icon">🎯</div>
+            <div class="metric-value" style="color: {champagne_color};">{score_str}</div>
+            <div class="metric-label">Career Readiness Score</div>
+            <div style="font-size: 0.74rem; color: {text_muted}; margin-top: 4px;">{cat_str}</div>
         </div>
         """)
 
     with col_s2:
         m_count = f"{matched_val} Skills" if st.session_state.readiness_data else "—"
         utils.safe_render_html(f"""
-        <div class="stat-card-premium">
-            <span class="stat-icon">🟢</span>
-            <div class="stat-val" style="color: #22C55E;">{m_count}</div>
-            <div class="stat-lbl">Skills Acquired</div>
-            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">Verified competencies</div>
+        <div class="metric-obsidian">
+            <div class="metric-icon">🟢</div>
+            <div class="metric-value" style="color: #22C55E;">{m_count}</div>
+            <div class="metric-label">Skills Acquired</div>
+            <div style="font-size: 0.74rem; color: {text_muted}; margin-top: 4px;">Verified competencies</div>
         </div>
         """)
 
     with col_s3:
         gap_count = f"{missing_val} Skills" if st.session_state.readiness_data else "—"
         utils.safe_render_html(f"""
-        <div class="stat-card-premium">
-            <span class="stat-icon">🔴</span>
-            <div class="stat-val" style="color: #EF4444;">{gap_count}</div>
-            <div class="stat-lbl">Skills To Learn</div>
-            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">High priority gap targets</div>
+        <div class="metric-obsidian">
+            <div class="metric-icon">🔴</div>
+            <div class="metric-value" style="color: #EF4444;">{gap_count}</div>
+            <div class="metric-label">Skills To Learn</div>
+            <div style="font-size: 0.74rem; color: {text_muted}; margin-top: 4px;">High priority gap targets</div>
         </div>
         """)
 
     with col_s4:
         prog_str = f"{completed_weeks} / 8 Wks" if st.session_state.analysis_result else "0 / 8 Wks"
         utils.safe_render_html(f"""
-        <div class="stat-card-premium">
-            <span class="stat-icon">🗺️</span>
-            <div class="stat-val" style="color: #8B5CF6;">{prog_str}</div>
-            <div class="stat-lbl">Learning Progress</div>
-            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">Milestones completed</div>
+        <div class="metric-obsidian">
+            <div class="metric-icon">🗺️</div>
+            <div class="metric-value" style="color: {gold_color};">{prog_str}</div>
+            <div class="metric-label">Learning Progress</div>
+            <div style="font-size: 0.74rem; color: {text_muted}; margin-top: 4px;">Milestones completed</div>
         </div>
         """)
 
@@ -347,9 +479,9 @@ if st.session_state.current_page == "📊 Dashboard":
 
         with col_actions:
             utils.safe_render_html("""
-            <div class="glass-panel" style="padding: 1.25rem;">
-                <div style="font-weight: 700; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.5rem;">⚡ Quick Actions</div>
-                <div style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 1rem;">Continue where you left off or export your materials.</div>
+            <div class="panel-obsidian" style="padding: 1.25rem;">
+                <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary);">⚡ Quick Actions</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Continue where you left off or export your materials.</div>
             </div>
             """)
             col_a1, col_a2 = st.columns(2)
@@ -369,10 +501,10 @@ if st.session_state.current_page == "📊 Dashboard":
 
         with col_f1:
             utils.safe_render_html("""
-            <div class="resource-tile">
+            <div class="metric-obsidian" style="padding: 1.75rem 1.25rem;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">🗺️</div>
-                <div style="font-weight: 800; font-size: 1.15rem; color: #FFFFFF;">8-Week Dynamic Roadmap</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-top: 0.5rem;">
+                <div style="font-weight: 800; font-size: 1.15rem; font-family: 'Manrope', sans-serif;">8-Week Dynamic Roadmap</div>
+                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
                     Personalized week-by-week curriculum calibrated to your available study hours and current experience level.
                 </div>
             </div>
@@ -380,10 +512,10 @@ if st.session_state.current_page == "📊 Dashboard":
 
         with col_f2:
             utils.safe_render_html("""
-            <div class="resource-tile">
+            <div class="metric-obsidian" style="padding: 1.75rem 1.25rem;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">🔍</div>
-                <div style="font-weight: 800; font-size: 1.15rem; color: #FFFFFF;">Skill Gap Diagnostic</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-top: 0.5rem;">
+                <div style="font-weight: 800; font-size: 1.15rem; font-family: 'Manrope', sans-serif;">Skill Gap Diagnostic</div>
+                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
                     Visual matrix benchmarking your skills against production requirements with priority labels and recommendations.
                 </div>
             </div>
@@ -391,10 +523,10 @@ if st.session_state.current_page == "📊 Dashboard":
 
         with col_f3:
             utils.safe_render_html("""
-            <div class="resource-tile">
+            <div class="metric-obsidian" style="padding: 1.75rem 1.25rem;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📄</div>
-                <div style="font-weight: 800; font-size: 1.15rem; color: #FFFFFF;">AI Resume & ATS Optimizer</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-top: 0.5rem;">
+                <div style="font-weight: 800; font-size: 1.15rem; font-family: 'Manrope', sans-serif;">AI Resume & ATS Optimizer</div>
+                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
                     Upload your PDF resume to detect missing keywords, evaluate ATS match scores, and receive actionable improvements.
                 </div>
             </div>
@@ -601,7 +733,8 @@ elif st.session_state.current_page == "🔍 Skill Gap Analysis":
                 readiness["matched"],
                 readiness["partial"],
                 readiness["missing"],
-                readiness["total"]
+                readiness["total"],
+                theme=st.session_state.theme
             )
             st.plotly_chart(gauge_fig, use_container_width=True)
             st.caption(f"Status: **{readiness['category']}**")
@@ -611,13 +744,17 @@ elif st.session_state.current_page == "🔍 Skill Gap Analysis":
             donut_fig = roadmap_generator.create_skill_breakdown_donut(
                 readiness["matched"],
                 readiness["partial"],
-                readiness["missing"]
+                readiness["missing"],
+                theme=st.session_state.theme
             )
             st.plotly_chart(donut_fig, use_container_width=True)
 
         with col_bar:
             st.markdown("##### 📊 Category Distribution")
-            bar_fig = roadmap_generator.create_category_distribution_bar(analysis.get("skills_analysis", []))
+            bar_fig = roadmap_generator.create_category_distribution_bar(
+                analysis.get("skills_analysis", []),
+                theme=st.session_state.theme
+            )
             st.plotly_chart(bar_fig, use_container_width=True)
 
         st.markdown("---")
@@ -633,10 +770,10 @@ elif st.session_state.current_page == "🔍 Skill Gap Analysis":
 
     else:
         utils.safe_render_html("""
-        <div class="hero-gradient-card" style="text-align: center; padding: 3rem 2rem;">
+        <div class="hero-obsidian" style="text-align: center; padding: 3rem 2rem;">
             <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">📊</div>
-            <div style="font-size: 1.35rem; font-weight: 800; color: #FFFFFF;">No Diagnostic Data Found</div>
-            <div style="font-size: 0.92rem; color: #94A3B8; max-width: 500px; margin: 0.5rem auto 1.5rem auto; line-height: 1.6;">
+            <div style="font-size: 1.35rem; font-weight: 800; font-family: 'Manrope', sans-serif;">No Diagnostic Data Found</div>
+            <div style="font-size: 0.92rem; color: var(--text-secondary); max-width: 500px; margin: 0.5rem auto 1.5rem auto; line-height: 1.6;">
                 Generate your personalized career analysis first to unlock interactive Plotly gauges, distribution charts, and the skill gap comparison matrix.
             </div>
         </div>
@@ -708,7 +845,7 @@ elif st.session_state.current_page == "📄 AI Resume Analyzer":
 
         with col_ats_gauge:
             score = ats.get("ats_score", 65)
-            gauge_fig = roadmap_generator.create_ats_score_gauge(score)
+            gauge_fig = roadmap_generator.create_ats_score_gauge(score, theme=st.session_state.theme)
             st.plotly_chart(gauge_fig, use_container_width=True)
             match_lvl = ats.get("match_level", "Moderate Match")
             st.caption(f"Compatibility: **{match_lvl}**")
@@ -1047,8 +1184,8 @@ elif st.session_state.current_page == "⚙️ Settings":
 # GLOBAL FOOTER
 # ==============================================================================
 utils.safe_render_html("""
-<div style="text-align: center; margin-top: 4.5rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.88rem; color: #64748B;">
-    ⚡ <b>SkillSync 2.0</b> — Your AI Career Mentor • Built with Google Gemini API, Streamlit, Plotly & Pandas<br/>
+<div style="text-align: center; margin-top: 4.5rem; padding-top: 2rem; border-top: 1px solid var(--border-color); font-size: 0.88rem; color: var(--text-secondary);">
+    ⚡ <b>SkillSync 2.0</b> — Obsidian Gold AI Career Mentor • Built with Google Gemini API, Streamlit, Plotly & Pandas<br/>
     Discover Your Skills. Bridge the Gap. Build Your Future.
 </div>
 """)
