@@ -299,8 +299,8 @@ def test_skill_gap_dataframe():
         raw_priority = str(s.get("priority", "–")).strip()
         rec = str(s.get("recommendation", "")).strip()
 
-        status_display = "🟢 Already Have" if "have" in raw_status.lower() else ("🟡 Needs Improvement" if "partial" in raw_status.lower() else "🔴 Need to Learn")
-        priority_display = "🔥 High" if "high" in raw_priority.lower() else ("⚡ Medium" if "med" in raw_priority.lower() else "—")
+        status_display = "Already Have" if "have" in raw_status.lower() else ("Needs Improvement" if "partial" in raw_status.lower() else "Need to Learn")
+        priority_display = "High" if "high" in raw_priority.lower() else ("Medium" if "med" in raw_priority.lower() else "—")
         records.append({
             "Skill / Technology": skill_name,
             "Category": category,
@@ -311,9 +311,9 @@ def test_skill_gap_dataframe():
     df = pd.DataFrame(records)
     assert len(df) == 3
     assert list(df.columns) == ["Skill / Technology", "Category", "Current Status", "Priority", "Learning Recommendation"]
-    assert df.iloc[0]["Current Status"] == "🟢 Already Have"
-    assert df.iloc[1]["Current Status"] == "🟡 Needs Improvement"
-    assert df.iloc[2]["Current Status"] == "🔴 Need to Learn"
+    assert df.iloc[0]["Current Status"] == "Already Have"
+    assert df.iloc[1]["Current Status"] == "Needs Improvement"
+    assert df.iloc[2]["Current Status"] == "Need to Learn"
     print("Skill Gap DataFrame tests passed!")
 
 

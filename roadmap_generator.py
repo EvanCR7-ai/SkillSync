@@ -249,25 +249,25 @@ def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
         raw_priority = str(s.get("priority", "–")).strip()
         recommendation = str(s.get("recommendation", s.get("current_mastery", "Action step in roadmap"))).strip()
 
-        # Map status to colored visual indicator
+        # Map status to clean text indicator (no emojis)
         if raw_status.lower() in ["already have", "have", "possessed", "mastered"]:
-            status_display = "🟢 Already Have"
+            status_display = "Already Have"
             matched_count += 1
         elif raw_status.lower() in ["partially skilled", "needs improvement", "partial", "improving"]:
-            status_display = "🟡 Needs Improvement"
+            status_display = "Needs Improvement"
             partial_count += 1
         else:
-            status_display = "🔴 Need to Learn"
+            status_display = "Need to Learn"
             missing_count += 1
 
-        # Map priority to clean indicator
+        # Map priority to clean indicator (no emojis)
         p_lower = raw_priority.lower()
         if "high" in p_lower:
-            priority_display = "🔥 High"
+            priority_display = "High"
         elif "med" in p_lower:
-            priority_display = "⚡ Medium"
+            priority_display = "Medium"
         elif "low" in p_lower:
-            priority_display = "🌱 Low"
+            priority_display = "Low"
         else:
             priority_display = "—"
 
@@ -286,19 +286,19 @@ def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
     col_m1, col_m2, col_m3 = st.columns(3)
     with col_m1:
         st.metric(
-            label="🟢 Already Have",
+            label="Already Have",
             value=f"{matched_count} Skills",
             help="Core technologies you currently possess"
         )
     with col_m2:
         st.metric(
-            label="🟡 Needs Improvement",
+            label="Needs Improvement",
             value=f"{partial_count} Skills",
             help="Skills where you have partial familiarity but need deeper practice"
         )
     with col_m3:
         st.metric(
-            label="🔴 Need to Learn",
+            label="Need to Learn",
             value=f"{missing_count} Skills",
             help="High-priority gap skills required for your target role"
         )
@@ -338,19 +338,18 @@ def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
     )
 
     # 3. Structured Card Breakdown Option
-    with st.expander("📋 View Detailed Card Breakdown by Technology", expanded=False):
+    with st.expander("View Detailed Card Breakdown by Technology", expanded=False):
         for s in skills_analysis:
             s_name = s.get("skill", "Unknown")
             cat = s.get("category", "General")
             status = s.get("status", "Need to Learn")
             priority = s.get("priority", "–")
             rec = s.get("recommendation", "")
-            status_icon = "🟢" if "have" in status.lower() else ("🟡" if "partial" in status.lower() else "🔴")
 
             c1, c2 = st.columns([1, 2])
             with c1:
-                st.markdown(f"**{status_icon} {s_name}**")
-                st.caption(f"Category: `{cat}` • Priority: `{priority}`")
+                st.markdown(f"**{s_name}**")
+                st.caption(f"Category: `{cat}` • Status: `{status}` • Priority: `{priority}`")
             with c2:
                 st.markdown(f"*{rec}*")
             st.markdown("---")
@@ -360,6 +359,7 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
     """
     Render the 8-week personalized roadmap in modern interactive cards
     with expandable details, learning objectives, resources, and completion check.
+    Zero emojis, clean typography.
     """
     # Track completion count
     completed_weeks = sum(
@@ -373,7 +373,7 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
     with col_prog1:
         st.markdown(f"**Roadmap Progress Tracker:** `{completed_weeks} of {total_weeks} Weeks Completed ({progress_pct}%)`")
     with col_prog2:
-        status_txt = "🎉 Curriculum Finished!" if progress_pct == 100 else "🚀 In Progress"
+        status_txt = "Curriculum Completed" if progress_pct == 100 else "In Progress"
         st.info(status_txt)
     st.progress(progress_pct / 100.0)
 
@@ -390,46 +390,45 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
         is_done = st.session_state.get(f"week_completed_{w_num}", False)
         is_capstone = (w_num == 8)
         
-        status_icon = "✅" if is_done else ("🏆" if is_capstone else "📅")
-        pill_label = f"{status_icon} Week {w_num}{' (Capstone)' if is_capstone else ''}"
-
-        expander_title = f"{pill_label}: {w_title} • {hours} hrs/week"
+        capstone_label = " (Capstone Project)" if is_capstone else ""
+        done_label = " [Completed]" if is_done else ""
+        expander_title = f"Week {w_num}{capstone_label}: {w_title} • {hours} hrs/week{done_label}"
         
         with st.expander(expander_title, expanded=(w_num in [1, 2])):
             col1, col2 = st.columns([3, 2])
 
             with col1:
-                st.markdown("##### 🎯 Learning Objectives")
+                st.markdown("##### Learning Objectives")
                 for obj in objectives:
                     st.markdown(f"• **{obj}**")
 
-                st.markdown("##### 🛠️ Practical Exercises & Tasks")
+                st.markdown("##### Practical Exercises & Deliverables")
                 for ex in exercises:
-                    st.markdown(f"💻 {ex}")
+                    st.markdown(f"• {ex}")
 
                 mini_project = week.get("mini_project", f"Build a focused working prototype applying Week {w_num} skills.")
-                st.markdown(f"🚀 **Weekly Mini-Project:** `{mini_project}`")
+                st.markdown(f"**Weekly Mini-Project:** `{mini_project}`")
 
-                st.info(f"🏆 **Expected Milestone Outcome:** {outcome}")
+                st.info(f"**Expected Milestone Outcome:** {outcome}")
 
             with col2:
-                st.markdown("##### 🧠 Skills Developed")
+                st.markdown("##### Skills Developed")
                 skill_chips = " ".join([f"`{s}`" for s in skills])
                 st.markdown(skill_chips if skill_chips else "`Core Concepts`")
 
-                st.markdown("##### 📚 Recommended Resources")
+                st.markdown("##### Recommended Resources")
                 for res in resources:
                     title = res.get("title", "Resource")
                     r_type = res.get("type", "Guide")
                     link = res.get("link", "#")
-                    st.markdown(f"🔗 [{title}]({link}) *({r_type})*")
+                    st.markdown(f"• [{title}]({link}) *({r_type})*")
 
                 st.markdown("---")
                 st.checkbox(
-                    "Mark Week Completed",
+                    "Mark Milestone as Completed",
                     key=f"week_completed_{w_num}",
                     value=is_done,
-                    help="Check off this milestone as you complete your weekly exercises."
+                    help="Check off this milestone as you complete your weekly deliverables."
                 )
 
 

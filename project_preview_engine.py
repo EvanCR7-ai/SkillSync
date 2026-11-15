@@ -122,7 +122,7 @@ def _build_frontend_preview_html(title: str, desc: str, diff: str, techs: List[s
 </div>
 
 <div class="hero-box">
-  <div class="hero-title">🚀 Interactive Application Prototype</div>
+  <div class="hero-title">Interactive Application Prototype</div>
   <div class="hero-desc">{desc}</div>
   <div class="badges">
     <span class="badge" style="color: #34D399; border-color: #10B981;">● {diff} Tier</span>
@@ -247,7 +247,7 @@ def _build_ml_preview_html(title: str, desc: str, diff: str, techs: List[str], p
 
 <div class="header">
   <div class="title-area">
-    <h2>🤖 {title}</h2>
+    <h2>{title}</h2>
     <p>Live ML Inference & Prediction Simulator • Model Serving Layer</p>
   </div>
   <span class="status-badge">● Model Loaded</span>
@@ -256,7 +256,7 @@ def _build_ml_preview_html(title: str, desc: str, diff: str, techs: List[str], p
 <div class="sim-container">
   <!-- Controls Panel -->
   <div class="panel">
-    <div class="panel-title">🎛️ Input Feature Parameters</div>
+    <div class="panel-title">Input Feature Parameters</div>
     
     <div class="control-group">
       <div class="label-row">
@@ -282,12 +282,12 @@ def _build_ml_preview_html(title: str, desc: str, diff: str, techs: List[str], p
       <input type="range" id="tickets" min="0" max="10" value="1" oninput="updateInference()">
     </div>
 
-    <button class="btn-predict" onclick="updateInference(true)">⚡ Recalculate Live Inference</button>
+    <button class="btn-predict" onclick="updateInference(true)">Recalculate Live Inference</button>
   </div>
 
   <!-- Real-Time Output Panel -->
   <div class="panel">
-    <div class="panel-title">📊 Predicted Outcome & Confidence</div>
+    <div class="panel-title">Predicted Outcome & Confidence</div>
     
     <div class="score-card">
       <div class="score-val" id="probScore">18%</div>
@@ -646,40 +646,38 @@ def render_project_showcase(project: Dict[str, Any], index: int):
     time_est = project.get("estimated_completion_time", "1-2 weeks")
     final_output = project.get("expected_final_output", "Interactive live demo and repository")
 
-    diff_icon = "🟢" if diff == "Beginner" else ("🟣" if diff == "Intermediate" else "🔴")
-
     # Project Header & Overview
     col_hdr, col_badge = st.columns([3, 1])
     with col_hdr:
-        st.markdown(f"### {diff_icon} {title}")
+        st.markdown(f"### {title}")
         st.caption(f"**Tier:** `{diff} Level` • **Estimated Effort:** `{time_est}`")
     with col_badge:
-        st.info(f"🏆 {diff} Project")
+        st.info(f"{diff} Level Portfolio Project")
 
     st.markdown(f"**Overview:** {desc}")
 
     # Core Problem & Technologies in 2 Columns
     col_p1, col_p2 = st.columns(2)
     with col_p1:
-        st.markdown("##### 🎯 Problem Solved")
+        st.markdown("##### Problem Solved")
         st.info(problem if problem else "Solves core business/engineering challenge with clean architecture.")
         
-        st.markdown("##### 📦 Expected Deliverable")
+        st.markdown("##### Expected Deliverable")
         st.success(final_output)
 
     with col_p2:
-        st.markdown("##### 🛠️ Technologies Required")
+        st.markdown("##### Technologies Required")
         tech_chips = " ".join([f"`{t}`" for t in techs])
         st.markdown(tech_chips if tech_chips else "`Python` `SQL`")
 
-        st.markdown("##### 🧠 Demonstrated Recruiter Competencies")
+        st.markdown("##### Demonstrated Competencies")
         skill_chips = " ".join([f"`{s}`" for s in skills_demo])
         st.markdown(skill_chips if skill_chips else "`Architecture Design` `Clean Code`")
 
     st.markdown("---")
 
     # 1. LIVE VISUAL PREVIEW & INTERACTIVE SIMULATION (PRIMARY OUTPUT)
-    st.markdown("##### 🖥️ Live Rendered Result & Interactive Simulation")
+    st.markdown("##### Live Rendered Prototype & Interactive Simulation")
     st.caption("Interact with the live application preview below. Test controls, sliders, buttons, and responsive layouts.")
 
     try:
@@ -689,7 +687,7 @@ def render_project_showcase(project: Dict[str, Any], index: int):
         st.error(f"Could not render visual preview: {e}")
 
     # 2. COLLAPSED EXPANDER: DEVELOPER TOOLS — VIEW SOURCE CODE
-    with st.expander("🛠️ Developer Tools — View Source Code", expanded=False):
+    with st.expander("Developer Tools — View Source Code", expanded=False):
         st.caption("Source code is provided for developer reference. Use the tabs below to copy or download project files.")
         source_files = get_project_source_files(project)
 
@@ -699,7 +697,7 @@ def render_project_showcase(project: Dict[str, Any], index: int):
                 lang = "python" if filename.endswith(".py") else ("html" if filename.endswith(".html") else ("css" if filename.endswith(".css") else "javascript"))
                 st.code(content, language=lang)
                 st.download_button(
-                    label=f"⬇️ Download {filename}",
+                    label=f"Download {filename}",
                     data=content,
                     file_name=filename,
                     mime="text/plain",
@@ -721,8 +719,7 @@ def render_all_portfolio_projects(projects: List[Dict[str, Any]]):
     for idx, p in enumerate(projects):
         diff = p.get("difficulty", "Project").capitalize()
         title = p.get("title", f"Project {idx+1}")
-        icon = "🟢" if diff == "Beginner" else ("🟣" if diff == "Intermediate" else "🔴")
-        tab_labels.append(f"{icon} {diff}: {title}")
+        tab_labels.append(f"{diff}: {title}")
 
     project_tabs = st.tabs(tab_labels)
     for idx, p in enumerate(projects):
