@@ -1155,3 +1155,426 @@ div[data-testid="stProgress"] > div > div > div > div {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   AI Results & Output Experience Design System (Obsidian Gold)
+   ========================================================================== */
+
+/* Universal Insight Cards (Strengths, Improvements, Recommendations, Warnings) */
+.insight-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--duration-hover) var(--ease-out-cubic),
+              border-color var(--duration-hover) ease,
+              box-shadow var(--duration-hover) ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.insight-card.strength {
+  border-left: 3.5px solid var(--status-success);
+}
+
+.insight-card.improvement {
+  border-left: 3.5px solid var(--status-warning);
+}
+
+.insight-card.recommendation {
+  border-left: 3.5px solid var(--gold-primary);
+}
+
+.insight-card.career {
+  border-left: 3.5px solid var(--gold-champagne);
+}
+
+.insight-card.warning {
+  border-left: 3.5px solid var(--status-danger);
+}
+
+.insight-card.success {
+  border-left: 3.5px solid var(--status-success);
+}
+
+.insight-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.insight-card-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.insight-card-body {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.insight-card-list {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.2rem;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Career Overview Hero Card */
+.career-hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 3.5px solid var(--gold-primary);
+  border-radius: 12px;
+  padding: 1.75rem 1.65rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 1.5rem;
+  animation: pageFadeSlide 300ms var(--ease-out-cubic);
+}
+
+.career-hero-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0.25rem 0 0.75rem 0;
+  line-height: 1.2;
+}
+
+.career-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.career-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.career-hero-badge.gold {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: var(--border-gold);
+  color: var(--gold-primary);
+}
+
+.career-hero-assessment {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  border-left: 2.5px solid var(--gold-primary);
+  padding-left: 1rem;
+  margin-top: 0.85rem;
+}
+
+/* Career Milestones Stepper (Foundation -> Intermediate -> Advanced -> Job Ready) */
+.milestone-stepper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.5rem 0;
+}
+
+.stepper-stage {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.85rem 0.85rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.stepper-stage.completed {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.stepper-stage.active {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+}
+
+.stepper-stage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.stepper-stage-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+}
+
+.stepper-stage-weeks {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.stepper-stage-status {
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* Compact Objective Card */
+.objective-item-card {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 0.45rem;
+  font-size: 13px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Numbered Exercise Task Card */
+.task-card-numbered {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem 0.95rem;
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.task-badge-number {
+  background: var(--gold-primary);
+  color: #090909;
+  font-weight: 800;
+  font-size: 11.5px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.task-content {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* Rich Resource Card */
+.resource-card-rich {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.resource-card-rich:hover {
+  border-color: var(--gold-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.resource-info-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resource-title-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gold-champagne);
+  text-decoration: none;
+}
+
+.resource-title-link:hover {
+  text-decoration: underline;
+}
+
+.resource-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* Highlighted Mini Project Card */
+.mini-project-highlight-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  padding: 1.15rem;
+  margin: 0.75rem 0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), 0 0 10px rgba(212, 175, 55, 0.08);
+}
+
+.mini-project-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-champagne);
+  margin-bottom: 0.35rem;
+}
+
+/* Milestone Outcome Banner */
+.outcome-banner-rich {
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Next 5 Focus Skills */
+.focus-skill-card {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.focus-skill-card:hover {
+  border-color: var(--gold-primary);
+  transform: translateY(-1px);
+}
+
+.focus-rank-badge {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-primary);
+  font-weight: 800;
+  font-size: 13px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ATS Top Improvements Diff Box */
+.ats-improvement-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 0.85rem;
+  box-shadow: var(--shadow-card);
+}
+
+.diff-before-after {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.65rem;
+}
+
+.diff-box {
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.diff-box.before {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #EF4444;
+}
+
+.diff-box.after {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22C55E;
+}
+
+/* Interview Subscore Grid */
+.interview-score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.interview-subscore-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.85rem 0.65rem;
+  text-align: center;
+}
+
+.subscore-val {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold-primary);
+  line-height: 1.1;
+}
+
+.subscore-lbl {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for result grids */
+@media (max-width: 768px) {
+  .milestone-stepper {
+    grid-template-columns: 1fr 1fr;
+  }
+  .diff-before-after {
+    grid-template-columns: 1fr;
+  }
+  .interview-score-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

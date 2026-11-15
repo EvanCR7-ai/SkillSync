@@ -865,8 +865,16 @@ elif st.session_state.current_page == "Career Roadmap":
         analysis = st.session_state.analysis_result
         prof = st.session_state.student_profile
 
-        # Timeline presentation
-        st.markdown(f"### 8-Week Progression for **{prof.get('target_role')}**")
+        # Career Overview Hero Card
+        roadmap_generator.render_career_overview_hero(prof, analysis, st.session_state.readiness_data)
+
+        # 3 Career Insights Cards (Strengths, Areas to Improve, Recommended Next Steps)
+        roadmap_generator.render_career_insights_row(analysis)
+
+        st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+
+        # Timeline presentation & Milestone progression stepper
+        st.markdown(f"### 8-Week Milestone Progression for **{prof.get('target_role')}**")
         st.caption(f"Calibrated for **{prof.get('study_hours')}** per week at **{prof.get('experience_level')}** level.")
 
         roadmap_generator.render_vertical_timeline(analysis.get("roadmap", []))
@@ -1090,49 +1098,11 @@ elif st.session_state.current_page == "Resume Analyzer":
     if st.session_state.resume_analysis:
         ats = st.session_state.resume_analysis
         st.markdown("---")
-        st.markdown("### ATS Optimization Diagnostic")
-
-        col_ats_gauge, col_ats_overview = st.columns([1, 2])
-
-        with col_ats_gauge:
-            score = ats.get("ats_score", 65)
-            gauge_fig = roadmap_generator.create_ats_score_gauge(score, theme=st.session_state.theme)
-            st.plotly_chart(gauge_fig, use_container_width=True)
-            match_lvl = ats.get("match_level", "Moderate Match")
-            st.caption(f"Compatibility: **{match_lvl}**")
-
-        with col_ats_overview:
-            st.markdown("##### ATS Assessment Summary")
-            st.info(
-                f"Your resume was evaluated against **{target_role_for_ats}** requirements. "
-                "Adding quantified deliverables and closing keyword gaps will maximize your interview callback rate."
-            )
-
-        st.markdown("---")
-
-        col_skills, col_gaps = st.columns(2)
-        with col_skills:
-            st.markdown("##### Matching Skills Detected")
-            matching_tags = " ".join([f"`{s}`" for s in ats.get("matching_skills", [])])
-            st.markdown(matching_tags if matching_tags else "`Foundational Skills`")
-
-            st.markdown("##### Resume Strengths")
-            for strength in ats.get("strengths", []):
-                st.markdown(f"• **{strength}**")
-
-        with col_gaps:
-            st.markdown("##### Missing Industry Keywords")
-            missing_tags = " ".join([f"`{s}`" for s in ats.get("missing_keywords", [])])
-            st.markdown(missing_tags if missing_tags else "`None identified`")
-
-            st.markdown("##### Areas for Improvement")
-            for imp in ats.get("improvements", []):
-                st.markdown(f"• {imp}")
-
-        st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
-        st.markdown("##### Actionable Next Steps")
-        for rec in ats.get("actionable_recommendations", []):
-            st.markdown(f"• {rec}")
+        roadmap_generator.render_resume_analysis_results(
+            ats=ats,
+            target_role=target_role_for_ats,
+            theme=st.session_state.theme
+        )
 
 
 # ==============================================================================
@@ -1247,22 +1217,12 @@ elif st.session_state.current_page == "Mock Interview":
         # Display Evaluation
         if st.session_state.mock_interview_eval:
             ev = st.session_state.mock_interview_eval
-            score_10 = ev.get("score", 7)
-
-            st.success(f"### AI Evaluation Report • Score: {score_10} / 10\n\n{ev.get('feedback', '')}")
-
-            col_ev_s, col_ev_i = st.columns(2)
-            with col_ev_s:
-                st.markdown("##### Strengths")
-                for s in ev.get("strengths", []):
-                    st.markdown(f"• **{s}**")
-            with col_ev_i:
-                st.markdown("##### Improvement Opportunities")
-                for imp in ev.get("improvement_areas", []):
-                    st.markdown(f"• {imp}")
-
-            st.markdown("##### Model Exemplary Answer")
-            st.info(ev.get("model_answer", ""))
+            roadmap_generator.render_mock_interview_evaluation(
+                ev=ev,
+                question_item=q_item,
+                role=interview_role,
+                seniority=interview_exp
+            )
 
 
 # ==============================================================================
@@ -1323,90 +1283,178 @@ elif st.session_state.current_page == "Project Recommendations":
 # ==============================================================================
 elif st.session_state.current_page == "Learning Resources":
     st.markdown("## Curated Technical Learning Library")
-    st.markdown("Hand-picked official documentation, interactive tutorials, and certification guides.")
+    st.markdown("Hand-picked official documentation, interactive engineering sandboxes, and industry roadmaps.")
 
-    tab_web, tab_back, tab_data, tab_devops, tab_certs = st.tabs([
-        "Frontend & Web",
-        "Backend & Systems",
-        "AI & Data Science",
-        "Cloud & DevOps",
-        "Top Free Certifications"
+    tab_prog, tab_db, tab_ds, tab_web, tab_cloud, tab_prep = st.tabs([
+        "Programming",
+        "Databases",
+        "Data Science & ML",
+        "Web & Full-Stack",
+        "Developer Tools & Cloud",
+        "Technical Interview Prep"
     ])
 
-    with tab_web:
-        col_w1, col_w2 = st.columns(2)
-        with col_w1:
+    with tab_prog:
+        st.markdown("#### Foundational & Systems Programming")
+        st.caption("Official language specifications, architectural idioms, and runtime mechanics.")
+        c1, c2 = st.columns(2)
+        with c1:
             with st.container(border=True):
-                st.markdown("#### [React 19 Official Documentation](https://react.dev)")
-                st.caption("Official Guide • Advanced React")
-                st.markdown("Master React Server Components, Suspense architecture, and custom hooks with interactive sandboxes.")
-                st.link_button("Explore Documentation", "https://react.dev", icon=":material/open_in_new:", use_container_width=True)
-        with col_w2:
+                st.markdown("#### [Python Official Documentation & PEPs](https://docs.python.org/3/)")
+                st.caption("Official Reference • Beginner to Advanced")
+                st.markdown("Master language semantics, asynchronous coroutines (`asyncio`), standard library modules, and typing.")
+                st.link_button("Explore Documentation", "https://docs.python.org/3/", icon=":material/open_in_new:", use_container_width=True)
             with st.container(border=True):
-                st.markdown("#### [Web.dev Core Web Vitals](https://web.dev/explore/metrics)")
-                st.caption("Google Developer Guide • Performance")
-                st.markdown("In-depth techniques for optimizing Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and layout shifts.")
-                st.link_button("View Guide", "https://web.dev/explore/metrics", icon=":material/open_in_new:", use_container_width=True)
+                st.markdown("#### [The Rust Programming Language Book](https://doc.rust-lang.org/book/)")
+                st.caption("Rust Foundation • Intermediate to Advanced")
+                st.markdown("Learn memory safety without a garbage collector, ownership, lifetimes, concurrency, and pattern matching.")
+                st.link_button("Read The Book", "https://doc.rust-lang.org/book/", icon=":material/open_in_new:", use_container_width=True)
+        with c2:
+            with st.container(border=True):
+                st.markdown("#### [TypeScript Official Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)")
+                st.caption("Microsoft Docs • Intermediate")
+                st.markdown("Comprehensive deep dive into static typing, generics, utility types, conditional types, and declaration files.")
+                st.link_button("Access Handbook", "https://www.typescriptlang.org/docs/handbook/intro.html", icon=":material/open_in_new:", use_container_width=True)
+            with st.container(border=True):
+                st.markdown("#### [Go by Example](https://gobyexample.com/)")
+                st.caption("Community Standard • Beginner to Intermediate")
+                st.markdown("Hands-on annotated examples covering goroutines, channels, interfaces, pointers, and HTTP microservices.")
+                st.link_button("View Examples", "https://gobyexample.com/", icon=":material/open_in_new:", use_container_width=True)
 
-    with tab_back:
-        col_b1, col_b2 = st.columns(2)
-        with col_b1:
+    with tab_db:
+        st.markdown("#### Relational, Document & Cache Storage")
+        st.caption("Database internals, indexing structures, query optimization, and transaction isolation.")
+        c1, c2 = st.columns(2)
+        with c1:
+            with st.container(border=True):
+                st.markdown("#### [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)")
+                st.caption("PostgreSQL Global Dev Group • All Levels")
+                st.markdown("The standard for relational databases. Covers query planning, EXPLAIN ANALYZE, indexing (B-Tree, GIN, GiST), and MVCC.")
+                st.link_button("Read Documentation", "https://www.postgresql.org/docs/", icon=":material/open_in_new:", use_container_width=True)
             with st.container(border=True):
                 st.markdown("#### [Use The Index, Luke!](https://use-the-index-luke.com/)")
-                st.caption("Database Mastery • SQL Optimization")
-                st.markdown("A definitive guide to database performance, composite B-Tree indexes, and relational query tuning.")
-                st.link_button("Read Handbook", "https://use-the-index-luke.com/", icon=":material/open_in_new:", use_container_width=True)
-        with col_b2:
+                st.caption("Markus Winand • Intermediate to Advanced")
+                st.markdown("A developer-centric guide to database performance, composite index ordering, null storage, and execution plans.")
+                st.link_button("Explore SQL Performance", "https://use-the-index-luke.com/", icon=":material/open_in_new:", use_container_width=True)
+        with c2:
+            with st.container(border=True):
+                st.markdown("#### [Redis University & Documentation](https://redis.io/docs/)")
+                st.caption("Redis Ltd. • Intermediate")
+                st.markdown("High-performance in-memory data structures, caching patterns, pub/sub messaging, Lua scripting, and persistence.")
+                st.link_button("Explore Redis Docs", "https://redis.io/docs/", icon=":material/open_in_new:", use_container_width=True)
             with st.container(border=True):
                 st.markdown("#### [Designing Data-Intensive Applications](https://dataintensive.net/)")
-                st.caption("Distributed Systems • Architecture")
-                st.markdown("Fundamental principles for building reliable, scalable, and maintainable data systems and microservices.")
-                st.link_button("Learn More", "https://dataintensive.net/", icon=":material/open_in_new:", use_container_width=True)
+                st.caption("Martin Kleppmann • Advanced")
+                st.markdown("The industry benchmark book on distributed consensus, replication, partitioning, transactions, and event stream processing.")
+                st.link_button("Learn Architecture", "https://dataintensive.net/", icon=":material/open_in_new:", use_container_width=True)
 
-    with tab_data:
-        col_d1, col_d2 = st.columns(2)
-        with col_d1:
+    with tab_ds:
+        st.markdown("#### Applied Machine Learning & Generative AI")
+        st.caption("From classical statistical modeling to deep learning, embeddings, and LLM orchestration.")
+        c1, c2 = st.columns(2)
+        with c1:
             with st.container(border=True):
-                st.markdown("#### [Fast.ai Practical Deep Learning](https://course.fast.ai)")
-                st.caption("Deep Learning • PyTorch")
-                st.markdown("Hands-on course taking you from fundamentals to training state-of-the-art vision and language models.")
+                st.markdown("#### [Fast.ai: Practical Deep Learning for Coders](https://course.fast.ai)")
+                st.caption("Fast.ai • Beginner to Intermediate")
+                st.markdown("Top-down hands-on course covering PyTorch, computer vision, natural language processing, tabular models, and collaborative filtering.")
                 st.link_button("Access Free Course", "https://course.fast.ai", icon=":material/open_in_new:", use_container_width=True)
-        with col_d2:
             with st.container(border=True):
                 st.markdown("#### [Google Gemini API Documentation](https://ai.google.dev/docs)")
-                st.caption("GenAI • LLM Integration")
-                st.markdown("Comprehensive guides for structured JSON outputs, multimodal reasoning, and embeddings.")
-                st.link_button("View API Docs", "https://ai.google.dev/docs", icon=":material/open_in_new:", use_container_width=True)
-
-    with tab_devops:
-        col_dp1, col_dp2 = st.columns(2)
-        with col_dp1:
+                st.caption("Google DeepMind • All Levels")
+                st.markdown("Official guides for structured JSON outputs, function calling, multimodal reasoning, embeddings, and long-context prompting.")
+                st.link_button("Explore Gemini Docs", "https://ai.google.dev/docs", icon=":material/open_in_new:", use_container_width=True)
+        with c2:
             with st.container(border=True):
-                st.markdown("#### [Docker Curriculum](https://docker-curriculum.com/)")
-                st.caption("DevOps Basics • Containerization")
-                st.markdown("Practical hands-on guide for containerizing full-stack applications and orchestrating multi-service setups.")
+                st.markdown("#### [Hugging Face NLP Course](https://huggingface.co/learn/nlp-course)")
+                st.caption("Hugging Face • Intermediate")
+                st.markdown("Learn Transformer architectures, fine-tuning pretrained models with PEFT/LoRA, tokenizers, and the Hugging Face Hub.")
+                st.link_button("Start NLP Course", "https://huggingface.co/learn/nlp-course", icon=":material/open_in_new:", use_container_width=True)
+            with st.container(border=True):
+                st.markdown("#### [Scikit-Learn User Guide](https://scikit-learn.org/stable/user_guide.html)")
+                st.caption("Scikit-Learn Community • Beginner to Intermediate")
+                st.markdown("Definitive reference for linear models, ensemble methods (Random Forest, Gradient Boosting), PCA, cross-validation, and pipelines.")
+                st.link_button("View User Guide", "https://scikit-learn.org/stable/user_guide.html", icon=":material/open_in_new:", use_container_width=True)
+
+    with tab_web:
+        st.markdown("#### Modern Full-Stack & Frontend Engineering")
+        st.caption("High-performance rendering, component models, reactive state, and API protocols.")
+        c1, c2 = st.columns(2)
+        with c1:
+            with st.container(border=True):
+                st.markdown("#### [React 19 Official Documentation](https://react.dev)")
+                st.caption("Meta Open Source • Beginner to Advanced")
+                st.markdown("Master React Server Components, Suspense architecture, `useActionState`, and optimal component composition.")
+                st.link_button("Explore React Docs", "https://react.dev", icon=":material/open_in_new:", use_container_width=True)
+            with st.container(border=True):
+                st.markdown("#### [FastAPI Tutorial & Documentation](https://fastapi.tiangolo.com/tutorial/)")
+                st.caption("Sebastián Ramírez • Intermediate")
+                st.markdown("Modern, fast Python web framework with type hints, Pydantic validation, dependency injection, and automatic OpenAPI generation.")
+                st.link_button("View FastAPI Tutorial", "https://fastapi.tiangolo.com/tutorial/", icon=":material/open_in_new:", use_container_width=True)
+        with c2:
+            with st.container(border=True):
+                st.markdown("#### [Web.dev: Modern Web Performance](https://web.dev/explore/metrics)")
+                st.caption("Google Developer Guide • Intermediate to Advanced")
+                st.markdown("Techniques for optimizing Core Web Vitals: Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift.")
+                st.link_button("Learn Performance", "https://web.dev/explore/metrics", icon=":material/open_in_new:", use_container_width=True)
+            with st.container(border=True):
+                st.markdown("#### [Next.js App Router Documentation](https://nextjs.org/docs)")
+                st.caption("Vercel • Intermediate to Advanced")
+                st.markdown("Production framework featuring React Server Components, hybrid rendering (SSR/SSG/ISR), server actions, and route handlers.")
+                st.link_button("Read Next.js Docs", "https://nextjs.org/docs", icon=":material/open_in_new:", use_container_width=True)
+
+    with tab_cloud:
+        st.markdown("#### Cloud Infrastructure, Containers & DevOps")
+        st.caption("Containerization, cluster orchestration, CI/CD automation, and cloud fundamentals.")
+        c1, c2 = st.columns(2)
+        with c1:
+            with st.container(border=True):
+                st.markdown("#### [Docker Curriculum for Developers](https://docker-curriculum.com/)")
+                st.caption("Prakhar Srivastav • Beginner to Intermediate")
+                st.markdown("Comprehensive practical guide to Dockerfiles, multi-stage builds, networking, persistent volumes, and Docker Compose.")
                 st.link_button("Start Tutorial", "https://docker-curriculum.com/", icon=":material/open_in_new:", use_container_width=True)
-        with col_dp2:
             with st.container(border=True):
-                st.markdown("#### [Kubernetes Interactive Tutorials](https://kubernetes.io/docs/tutorials/)")
-                st.caption("K8s • Cloud Native")
-                st.markdown("Learn to deploy, scale, and update containerized applications directly in a live terminal sandbox.")
+                st.markdown("#### [Kubernetes Official Interactive Sandbox](https://kubernetes.io/docs/tutorials/)")
+                st.caption("Cloud Native Computing Foundation • Intermediate to Advanced")
+                st.markdown("Deploy, manage, and scale containerized clusters. Learn Pods, Deployments, Services, ConfigMaps, and Ingress controllers.")
                 st.link_button("Interactive Sandbox", "https://kubernetes.io/docs/tutorials/", icon=":material/open_in_new:", use_container_width=True)
+        with c2:
+            with st.container(border=True):
+                st.markdown("#### [GitHub Actions Documentation](https://docs.github.com/en/actions)")
+                st.caption("GitHub Docs • Beginner to Intermediate")
+                st.markdown("Automate CI/CD workflows, unit testing pipelines, security scanning, artifact publishing, and automated releases.")
+                st.link_button("Explore Actions", "https://docs.github.com/en/actions", icon=":material/open_in_new:", use_container_width=True)
+            with st.container(border=True):
+                st.markdown("#### [AWS Skill Builder & Cloud Practitioner](https://aws.amazon.com/training/digital/)")
+                st.caption("Amazon Web Services • Beginner")
+                st.markdown("Foundational cloud architecture concepts: compute (EC2/Lambda), storage (S3), databases (RDS/DynamoDB), and IAM security.")
+                st.link_button("Access AWS Learning", "https://aws.amazon.com/training/digital/", icon=":material/open_in_new:", use_container_width=True)
 
-    with tab_certs:
-        col_c1, col_c2 = st.columns(2)
-        with col_c1:
+    with tab_prep:
+        st.markdown("#### Technical Interview Preparation & Algorithms")
+        st.caption("Coding challenges, system design interviews, behavioral frameworks, and problem-solving patterns.")
+        c1, c2 = st.columns(2)
+        with c1:
             with st.container(border=True):
-                st.markdown("#### [freeCodeCamp Certifications](https://www.freecodecamp.org/learn)")
-                st.caption("300-Hour Accredited Curriculums • 100% Free")
-                st.markdown("Recognized credentials in Responsive Web Design, JavaScript Algorithms, Relational Databases, and Machine Learning.")
-                st.link_button("Enroll Free", "https://www.freecodecamp.org/learn", icon=":material/open_in_new:", use_container_width=True)
-        with col_c2:
+                st.markdown("#### [NeetCode 150 Coding Roadmap](https://neetcode.io/practice)")
+                st.caption("NeetCode • All Levels")
+                st.markdown("Curated 150 algorithmic problems grouped by pattern: Two Pointers, Sliding Window, Trees, Graphs, Dynamic Programming.")
+                st.link_button("Practice Problems", "https://neetcode.io/practice", icon=":material/open_in_new:", use_container_width=True)
             with st.container(border=True):
-                st.markdown("#### [CS50x: Introduction to Computer Science](https://cs50.harvard.edu/x)")
-                st.caption("Harvard University • edX")
-                st.markdown("The world-renowned computer science course covering C, algorithms, memory, Python, SQL, and web development.")
-                st.link_button("Audit Course", "https://cs50.harvard.edu/x", icon=":material/open_in_new:", use_container_width=True)
+                st.markdown("#### [System Design Primer](https://github.com/donnemartin/system-design-primer)")
+                st.caption("Donne Martin • Intermediate to Advanced")
+                st.markdown("Comprehensive open-source handbook for large-scale distributed systems, load balancing, caching, and database sharding.")
+                st.link_button("View Primer", "https://github.com/donnemartin/system-design-primer", icon=":material/open_in_new:", use_container_width=True)
+        with c2:
+            with st.container(border=True):
+                st.markdown("#### [Tech Interview Handbook](https://www.techinterviewhandbook.org/)")
+                st.caption("Yangshun Tay • All Levels")
+                st.markdown("Comprehensive guide covering algorithm cheatsheets, resume optimization, behavioral questions, and offer negotiation.")
+                st.link_button("Read Handbook", "https://www.techinterviewhandbook.org/", icon=":material/open_in_new:", use_container_width=True)
+            with st.container(border=True):
+                st.markdown("#### [Harvard CS50x: Computer Science](https://cs50.harvard.edu/x)")
+                st.caption("Harvard University • Beginner to Intermediate")
+                st.markdown("World-renowned introduction to computational thinking, algorithms, memory management, data structures, and engineering rigor.")
+                st.link_button("Audit CS50x Free", "https://cs50.harvard.edu/x", icon=":material/open_in_new:", use_container_width=True)
 
 
 # ==============================================================================

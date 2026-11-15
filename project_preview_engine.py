@@ -656,6 +656,21 @@ def render_project_showcase(project: Dict[str, Any], index: int):
 
     st.markdown(f"**Overview:** {desc}")
 
+    # Why This Project Is Valuable
+    why_val = project.get("why_valuable", (
+        f"Directly validates hands-on proficiency with {', '.join(techs[:3]) if techs else 'production engineering stacks'}, "
+        f"giving hiring teams verifiable evidence of your capability to ship reliable software."
+    ))
+    st.markdown(f"""
+    <div class="insight-card recommendation" style="margin: 0.75rem 0 1.25rem 0;">
+        <div class="insight-card-header">
+            <span style="color: var(--gold-primary); font-weight: bold; font-size: 16px;">★</span>
+            <span class="insight-card-title">Why This Project Is Valuable for Technical Interviews</span>
+        </div>
+        <div class="insight-card-body">{html.escape(why_val)}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     # Core Problem & Technologies in 2 Columns
     col_p1, col_p2 = st.columns(2)
     with col_p1:

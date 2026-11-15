@@ -371,8 +371,20 @@ def generate_fallback_career_analysis(
                 "Write comprehensive README documentation with architecture diagrams"
             ]
             w_resources = [
-                {"title": "GitHub Actions Documentation", "type": "Documentation", "link": "https://docs.github.com/en/actions"},
-                {"title": "Streamlit & Cloud Deployment Guide", "type": "Guide", "link": "https://docs.streamlit.io"}
+                {
+                    "title": "GitHub Actions CI/CD Best Practices",
+                    "provider": "GitHub Docs",
+                    "type": "Documentation",
+                    "description": "Automate build, lint, and automated test pipelines on every pull request.",
+                    "link": "https://docs.github.com/en/actions"
+                },
+                {
+                    "title": "Production Cloud Deployment & Scaling",
+                    "provider": "Cloud Native Architecture",
+                    "type": "Guide",
+                    "description": "Deploy containerized services to managed cloud environments with zero-downtime health checks.",
+                    "link": "https://docs.streamlit.io"
+                }
             ]
             w_exercises = [
                 "Create complete GitHub repository with semantic commit history",
@@ -386,23 +398,51 @@ def generate_fallback_career_analysis(
             skill_name = target_skill["skill"]
             category = target_skill["category"]
 
-            w_title = f"{skill_name} Foundations & Practical Application"
+            w_title = f"{skill_name} Architecture & Practical Mastery"
             w_skills = [skill_name, category]
             w_objectives = [
-                f"Master core principles and best practices of {skill_name}",
-                f"Solve intermediate coding challenges involving {skill_name}",
-                f"Integrate {skill_name} into modular components with clean architecture"
+                f"Master core syntax, design patterns, and idiomatic idioms of {skill_name}",
+                f"Implement clean, modular components solving real-world engineering constraints with {skill_name}",
+                f"Establish automated testing, profiling, and benchmarking to eliminate latency bottlenecks"
             ]
             w_resources = [
-                {"title": f"Official {skill_name} Documentation", "type": "Documentation", "link": "https://devdocs.io"},
-                {"title": f"Interactive {skill_name} Deep Dive", "type": "Interactive", "link": "https://roadmap.sh"}
+                {
+                    "title": f"Official {skill_name} Developer Guide",
+                    "provider": "Official Documentation",
+                    "type": "Documentation",
+                    "description": f"Comprehensive language specifications, standard libraries, and architectural paradigms for {skill_name}.",
+                    "link": "https://devdocs.io"
+                },
+                {
+                    "title": f"Production Engineering with {skill_name}",
+                    "provider": "Roadmap.sh / Community",
+                    "type": "Interactive Guide",
+                    "description": f"Curated industry best practices, common pitfalls, and real-world system patterns for {skill_name}.",
+                    "link": "https://roadmap.sh"
+                }
             ]
             w_exercises = [
-                f"Build a standalone module implementing core features of {skill_name}",
-                f"Write automated unit tests verifying edge cases for {skill_name}",
-                f"Refactor and document code according to industry standards"
+                f"Task 1: Core Setup & Architecture — Design and scaffold a modular service utilizing {skill_name} best practices.",
+                f"Task 2: Implementation & Error Recovery — Build the primary functional pipeline with comprehensive exception handling and logging.",
+                f"Task 3: Automated Verification — Write unit and integration test suites covering edge cases and performance boundaries."
             ]
-            w_outcome = f"Confident practical mastery of {skill_name} ready for real-world integration"
+            w_outcome = f"Confident production mastery of {skill_name} with verified test suites and clean architecture ready for team integration."
+            w_mini_project = {
+                "name": f"{skill_name} Micro-Service Sandbox",
+                "objective": f"Construct an isolated, production-grade prototype implementing core capabilities of {skill_name}.",
+                "technologies": [skill_name, category, "Clean Architecture"],
+                "expected_output": f"Fully documented GitHub-ready repository featuring unit tests, CI config, and clean README.",
+                "estimated_effort": f"{max(3, hours_num // 2)} hours"
+            }
+
+        if week_idx == 8:
+            w_mini_project = {
+                "name": f"Enterprise {target_role} Capstone System",
+                "objective": f"Synthesize all curriculum competencies into a cohesive, deployed software system for {target_role}.",
+                "technologies": w_skills + ["Docker", "CI/CD", "Cloud"],
+                "expected_output": "Live deployed cloud application with automated CI/CD pipeline and architectural documentation.",
+                "estimated_effort": f"{hours_num} hours"
+            }
 
         roadmap.append({
             "week_number": week_idx,
@@ -411,6 +451,7 @@ def generate_fallback_career_analysis(
             "objectives": w_objectives,
             "resources": w_resources,
             "practical_exercises": w_exercises,
+            "mini_project": w_mini_project,
             "expected_outcome": w_outcome,
             "estimated_study_hours": hours_num
         })
@@ -428,6 +469,38 @@ def generate_fallback_career_analysis(
             "expected_final_output": deliverable
         })
 
+    matched_names = [s["skill"] for s in skills_analysis if s["status"] == "Already Have"]
+    missing_names = [s["skill"] for s in skills_analysis if s["status"] == "Need to Learn"]
+    partial_names = [s["skill"] for s in skills_analysis if s["status"] == "Partially Skilled"]
+
+    strengths = [
+        f"Demonstrated core proficiency in {', '.join(matched_names[:2])}." if matched_names else "Strong foundational motivation and dedication to software engineering discipline.",
+        f"Existing technical baseline allows faster progression into advanced {target_role} topics.",
+        "Clear goal alignment with modern industry engineering requirements."
+    ]
+    improvements = [
+        f"Bridge high-priority gaps in {', '.join(missing_names[:2])} required for production readiness." if missing_names else f"Deepen advanced system design and edge-case testing for {target_role}.",
+        f"Solidify intermediate familiarity with {', '.join(partial_names[:2])} into verified production mastery." if partial_names else "Establish automated CI/CD and deployment workflows.",
+        "Translate technical knowledge into measurable, interview-ready portfolio applications."
+    ]
+    next_steps = [
+        f"Focus initial weekly study on mastering {missing_names[0] if missing_names else 'core architecture'} through targeted hands-on code exercises.",
+        "Establish a dedicated GitHub repository to track weekly deliverables and maintain semantic commit history.",
+        "Complete the Week 4 mid-term project to validate full-stack competency before tackling the capstone."
+    ]
+
+    for p in portfolio_projects:
+        p["why_valuable"] = (
+            f"Directly showcases hands-on competency in {', '.join(p.get('technologies_required', [])[:3])}, "
+            f"providing concrete proof of engineering maturity during {target_role} hiring evaluations."
+        )
+        p["learning_outcomes"] = [
+            f"Architect and structure a production {p.get('title', 'software')} system.",
+            "Implement automated testing, modular clean code, and API boundaries.",
+            "Deploy a live interactive user-facing prototype with thorough technical documentation."
+        ]
+        p["expected_deliverables"] = p.get("expected_final_output", "Interactive live demo and repository")
+
     return {
         "career_summary": {
             "target_role": target_role,
@@ -440,6 +513,12 @@ def generate_fallback_career_analysis(
                 "Every senior engineer started with foundational steps. Your dedication of "
                 f"{study_hours} weekly is the exact catalyst needed to bridge your skill gap and build your future."
             ),
+            "strengths": strengths,
+            "areas_to_improve": improvements,
+            "next_steps": next_steps,
+            "duration_weeks": 8,
+            "weekly_study_hours": study_hours,
+            "experience_level": experience_level,
             "source": "curated_fallback"
         },
         "skills_analysis": skills_analysis,
@@ -777,12 +856,61 @@ Analyze the resume and return a JSON object with this exact schema:
         "Ensure resume follows a single-column, standard ATS-friendly PDF structure."
     ]
 
+    top_improvements = [
+        {
+            "title": "Quantify Engineering Impact with Key Metrics",
+            "what": "Replace qualitative descriptions with measurable technical and business outcomes (latency, throughput, cost).",
+            "why": "ATS scoring algorithms and engineering hiring managers rank resumes with quantified metrics 3x higher.",
+            "how_to_fix": "Adopt Google's XYZ formula: Accomplished [X], as measured by [Y], by doing [Z].",
+            "example_before": "Responsible for optimizing backend database queries.",
+            "example_after": "Optimized PostgreSQL indexes and query plans, reducing p95 latency by 42% across 500k daily requests."
+        },
+        {
+            "title": "Integrate Missing Production Keywords",
+            "what": f"Explicitly integrate required tools and frameworks ({', '.join(missing[:3]) if missing else 'Docker, CI/CD, Cloud'}) into project bullets.",
+            "why": "Automated ATS parsers score keyword density before human recruiters ever inspect your profile.",
+            "how_to_fix": "Weave target keywords naturally into context rather than isolated comma lists.",
+            "example_before": "Deployed web applications to web servers.",
+            "example_after": "Automated containerized deployment using Docker and GitHub Actions CI/CD to AWS cloud infrastructure."
+        },
+        {
+            "title": "Highlight System Architecture & Design Scope",
+            "what": "Describe the architectural scope of your projects (e.g. microservices, REST/GraphQL, caching, data layers).",
+            "why": "Signals engineering maturity, structural reasoning, and readiness for independent contribution.",
+            "how_to_fix": "Specify the data flows, interface boundaries, and trade-offs made in key projects.",
+            "example_before": "Built an API for users to access platform data.",
+            "example_after": "Architected a scalable RESTful API with FastAPI and Redis caching, serving 10k concurrent daily active users."
+        },
+        {
+            "title": "Categorize Technical Skills Section",
+            "what": "Organize technical competencies into clear groupings: Languages, Frameworks, Databases, Tools & Platforms.",
+            "why": "Allows both automated parsers and interviewers to quickly verify technical stack compatibility.",
+            "how_to_fix": "Format the skills section into bold categories rather than an unsegmented paragraph.",
+            "example_before": "Python, SQL, React, Git, Docker, AWS, PostgreSQL, Linux",
+            "example_after": "Languages: Python, SQL • Frameworks: FastAPI, React • Databases: PostgreSQL, Redis • Cloud & Tools: Docker, AWS, Git"
+        },
+        {
+            "title": "Tailor Summary Statement to Target Role",
+            "what": f"Write a focused 2-sentence opening summary specifically targeting {target_role} opportunities.",
+            "why": "Establishes immediate candidate relevance and primes recruiters for your key technical strengths.",
+            "how_to_fix": "State your core specialization, years of focused practice, and primary value proposition.",
+            "example_before": "Passionate developer looking to grow technical skills at an innovative company.",
+            "example_after": f"Software Engineer specializing in {target_role} systems, high-throughput architectures, and automated cloud deployments."
+        }
+    ]
+
     return {
         "ats_score": ats_score,
         "match_level": match_level,
         "matching_skills": matched if matched else ["Foundational Problem Solving"],
         "missing_keywords": missing if missing else ["Advanced Architecture", "System Design"],
         "strengths": strengths,
+        "formatting_issues": [
+            "Use standard section headers ('Experience', 'Education', 'Technical Skills') for 100% reliable parser ingestion.",
+            "Avoid multi-column tables, text boxes, or non-standard glyphs that can scramble ATS text flow."
+        ],
+        "experience_relevance": f"Foundational alignment with {target_role} standards, with key opportunities to spotlight production metrics and end-to-end delivery.",
+        "top_improvements": top_improvements,
         "improvements": improvements,
         "actionable_recommendations": recs,
         "source": "heuristic_engine"
@@ -992,12 +1120,38 @@ Evaluate the answer thoroughly and return a JSON object with this exact structur
         "and illustrates the solution with a concrete production example highlighting performance metrics and edge-case handling."
     )
 
+    sub_scores = {
+        "technical_accuracy": max(1, min(10, base_score + 1 if base_score < 9 else base_score)),
+        "communication_quality": max(1, min(10, base_score)),
+        "problem_solving": max(1, min(10, base_score - 1 if base_score > 3 else base_score)),
+        "completeness": max(1, min(10, base_score))
+    }
+    missing_concepts = [
+        "Explicitly stating time (Big-O) and space complexity trade-offs.",
+        "Addressing real-world production edge cases, network timeouts, and fault tolerance.",
+        "Justifying architectural tool selection over alternative approaches."
+    ]
+    checklist = [
+        "State problem scope and clarify assumptions immediately before proposing a solution.",
+        "Outline algorithmic steps clearly before diving into code or syntax specifics.",
+        "Analyze time complexity O(N) and memory footprint explicitly.",
+        "Discuss edge cases (null inputs, scale limits, concurrency race conditions).",
+        "Conclude with how the implementation is tested and monitored in production."
+    ]
+
     return {
         "score": base_score,
+        "sub_scores": sub_scores,
         "feedback": f"Strong conceptual effort with {word_count} words. Deepening specific production trade-offs will elevate your response to senior level.",
         "strengths": strengths,
         "improvement_areas": improvements,
+        "missing_concepts": missing_concepts,
+        "how_to_improve": (
+            "Structure your technical answers using the STAR framework (Situation, Task, Action, Result). "
+            "Concretely explain your engineering reasoning and articulate architectural trade-offs."
+        ),
         "model_answer": model_answer,
+        "checklist": checklist,
         "source": "heuristic_evaluator"
     }
 
