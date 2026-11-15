@@ -9,6 +9,8 @@ import os
 import sys
 import html
 import textwrap
+import base64
+from pathlib import Path
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -24,25 +26,45 @@ import icons
 # Load environment variables
 load_dotenv()
 
+# Path configuration using pathlib
+BASE_DIR = Path(__file__).resolve().parent
+ASSETS_DIR = BASE_DIR / "assets"
+LOGO_PATH = ASSETS_DIR / "skillsync-gold-logo.png"
+ICON_PATH = ASSETS_DIR / "skillsync-gold-icon.png"
+
 # Page configuration
 st.set_page_config(
     page_title="SkillSync 2.0 – AI Career Intelligence",
-    page_icon="⚡",
+    page_icon=str(ICON_PATH) if ICON_PATH.exists() else "⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # Load custom CSS
 def load_css(file_name: str = "styles.css"):
-    dir_path = os.path.dirname(os.path.abspath(__file__))
-    candidate = os.path.join(dir_path, file_name)
-    if not os.path.exists(candidate):
-        candidate = file_name
-    if os.path.exists(candidate):
+    candidate = BASE_DIR / file_name
+    if not candidate.exists():
+        candidate = Path(file_name)
+    if candidate.exists():
         with open(candidate, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
+
+# Native Streamlit Logo & Icon System (Expanded & Collapsed Sidebar)
+if LOGO_PATH.exists():
+    st.logo(
+        str(LOGO_PATH),
+        icon_image=str(ICON_PATH) if ICON_PATH.exists() else None,
+        size="large"
+    )
+
+def get_logo_base64() -> str:
+    """Helper to encode the official Obsidian Gold logo for crisp inline rendering."""
+    if LOGO_PATH.exists():
+        with open(LOGO_PATH, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+    return ""
 
 # ==============================================================================
 # SESSION STATE INITIALIZATION & NORMALIZATION
@@ -120,8 +142,6 @@ def apply_active_theme():
         [data-testid="stSidebar"] {
             background-color: #F0EDE5 !important;
             border-right: 1px solid #E5DED0 !important;
-        }
-        [data-testid="stSidebar"] * {
             color: #171717;
         }
         .hero-obsidian, .metric-obsidian, .panel-obsidian {
@@ -169,8 +189,6 @@ def apply_active_theme():
         [data-testid="stSidebar"] {
             background-color: #101010 !important;
             border-right: 1px solid #303030 !important;
-        }
-        [data-testid="stSidebar"] * {
             color: #F8F5EC;
         }
         .hero-obsidian, .metric-obsidian, .panel-obsidian {
@@ -237,18 +255,8 @@ with st.sidebar:
     gold_champagne = "#F1D58A" if is_dark else "#D9BD79"
 
     # Official SkillSync Gold Brand Header
-    logo_svg = icons.get_lucide_svg("zap", size=22, color="#090909", stroke_width=2.5)
-    utils.safe_render_html(f"""
-    <div class="sidebar-brand-container">
-        <div class="sidebar-logo-icon">
-            {logo_svg}
-        </div>
-        <div>
-            <div class="sidebar-brand-name">SkillSync</div>
-            <div class="sidebar-brand-tagline">AI Career Intelligence</div>
-        </div>
-    </div>
-    """)
+    if LOGO_PATH.exists():
+        st.markdown("<div class='sidebar-brand-divider'></div>", unsafe_allow_html=True)
 
     # Grouped Navigation System
     for group_data in NAV_GROUPS:
@@ -373,6 +381,27 @@ EXPERIENCE_LEVELS = [
     "Intermediate",
     "Advanced"
 ]
+
+
+# ==============================================================================
+# GLOBAL APPLICATION HEADER (RESPONSIVE BRANDING & BREADCRUMBS)
+# ==============================================================================
+logo_b64 = get_logo_base64()
+active_page_title = st.session_state.current_page
+header_html = f"""
+<div class="app-header-container">
+    <div class="app-header-brand">
+        <div class="app-header-logo-wrap">
+            <img src="data:image/png;base64,{logo_b64}" alt="SkillSync 2.0" class="app-header-logo-img" />
+        </div>
+    </div>
+    <div class="app-header-meta">
+        <span class="app-header-breadcrumb">Platform / <span class="app-header-page">{html.escape(active_page_title)}</span></span>
+        <span class="app-header-badge">Obsidian Gold Edition</span>
+    </div>
+</div>
+"""
+utils.safe_render_html(header_html)
 
 
 # ==============================================================================

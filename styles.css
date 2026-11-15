@@ -4,7 +4,7 @@
    Typography: Inter (Body) & Manrope (Headings)
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
 :root {
   /* Dark Mode Palette (Obsidian Gold) */
@@ -144,10 +144,113 @@ p, .body-p {
   background-color: var(--bg-secondary) !important;
   border-right: 1px solid var(--border-color) !important;
   padding-top: 1.5rem !important;
+  font-family: var(--font-body);
 }
 
-[data-testid="stSidebar"] * {
-  font-family: var(--font-body);
+/* Fix Material Icon ligatures in sidebar navigation */
+[data-testid="stIconMaterial"] {
+  font-family: 'Material Symbols Rounded' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  font-feature-settings: 'liga' 1 !important;
+  -webkit-font-feature-settings: 'liga' !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Streamlit Logo & Icon System */
+[data-testid="stLogo"] {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0.25rem 0.25rem 0.75rem 0.25rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+[data-testid="stLogo"] img {
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 52px !important;
+  object-fit: contain !important;
+  border-radius: 6px !important;
+}
+
+.sidebar-brand-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.75rem 0 1rem 0;
+}
+
+/* Global Application Header */
+.app-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.15rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  gap: 1rem;
+}
+
+.app-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 6px;
+  border-radius: 8px;
+  background: #090909;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.app-header-logo-wrap img {
+  max-height: 32px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.app-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 13px;
+}
+
+.app-header-breadcrumb {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.app-header-page {
+  color: var(--gold-champagne);
+  font-weight: 600;
+}
+
+.app-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--border-gold);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold-primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 /* Sidebar Brand Header */
