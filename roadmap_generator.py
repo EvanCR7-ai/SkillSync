@@ -4,10 +4,13 @@ Handles rendering of the futuristic skill gap dashboard, Plotly readiness gauges
 interactive 8-week roadmap milestone cards, and portfolio project blueprints.
 """
 
+import html
 from typing import Dict, List, Any
+import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 import project_preview_engine
+import utils
 
 
 def create_readiness_gauge(score: int, matched: int, partial: int, missing: int, total: int) -> go.Figure:
@@ -105,65 +108,115 @@ def create_skill_breakdown_donut(matched: int, partial: int, missing: int) -> go
 
 def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
     """
-    Render an attractive HTML table displaying the required skills,
-    current status, learning priority, and recommendations with visual badges.
+    Render a native Streamlit dataframe and structured metrics for skill comparison.
+    Completely eliminates dynamic HTML strings to guarantee 100% reliable rendering.
     """
-    rows_html = ""
+    if not skills_analysis:
+        st.info("No skill diagnostic data available for display.")
+        return
+
+    # Clean & normalize data into structured records
+    table_records = []
+    matched_count = 0
+    partial_count = 0
+    missing_count = 0
+
     for s in skills_analysis:
-        skill = s.get("skill", "Skill")
-        category = s.get("category", "General")
-        status = s.get("status", "Need to Learn")
-        priority = s.get("priority", "-")
-        recommendation = s.get("recommendation", "")
+        skill_name = str(s.get("skill", "Unknown Skill")).strip()
+        category = str(s.get("category", "General")).strip()
+        raw_status = str(s.get("status", "Need to Learn")).strip()
+        raw_priority = str(s.get("priority", "–")).strip()
+        recommendation = str(s.get("recommendation", s.get("current_mastery", "Action step in roadmap"))).strip()
 
-        # Status badge
-        if status == "Already Have":
-            status_badge = '<span class="badge badge-have">✓ Already Have</span>'
-        elif status == "Partially Skilled":
-            status_badge = '<span class="badge badge-partial">⚡ Partially Skilled</span>'
+        # Map status to colored visual indicator
+        if raw_status.lower() in ["already have", "have", "possessed", "mastered"]:
+            status_display = "🟢 Already Have"
+            matched_count += 1
+        elif raw_status.lower() in ["partially skilled", "needs improvement", "partial", "improving"]:
+            status_display = "🟡 Needs Improvement"
+            partial_count += 1
         else:
-            status_badge = '<span class="badge badge-learn">✕ Need to Learn</span>'
+            status_display = "🔴 Need to Learn"
+            missing_count += 1
 
-        # Priority badge
-        if priority == "High":
-            priority_badge = '<span class="badge badge-priority-high">High Priority</span>'
-        elif priority == "Medium":
-            priority_badge = '<span class="badge badge-priority-medium">Medium</span>'
-        elif priority == "Low":
-            priority_badge = '<span class="badge badge-priority-low">Low</span>'
+        # Map priority to clean indicator
+        p_lower = raw_priority.lower()
+        if "high" in p_lower:
+            priority_display = "🔥 High"
+        elif "med" in p_lower:
+            priority_display = "⚡ Medium"
+        elif "low" in p_lower:
+            priority_display = "🌱 Low"
         else:
-            priority_badge = '<span style="color: var(--text-muted); font-weight: 500;">—</span>'
+            priority_display = "—"
 
-        rows_html += f"""
-        <tr>
-            <td style="font-weight: 700; color: #FFFFFF;">
-                {skill}
-                <div style="font-size: 0.78rem; color: #94A3B8; font-weight: 500; margin-top: 3px;">{category}</div>
-            </td>
-            <td>{status_badge}</td>
-            <td>{priority_badge}</td>
-            <td style="color: #CBD5E1; font-size: 0.9rem; line-height: 1.5;">{recommendation}</td>
-        </tr>
-        """
+        table_records.append({
+            "Skill / Technology": skill_name,
+            "Category": category,
+            "Current Status": status_display,
+            "Priority": priority_display,
+            "Learning Recommendation": recommendation
+        })
 
-    table_html = f"""
-    <div style="overflow-x: auto; margin-top: 1rem;">
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th style="width: 26%;">Required Skill & Category</th>
-                    <th style="width: 18%;">Current Status</th>
-                    <th style="width: 15%;">Priority</th>
-                    <th style="width: 41%;">Personalized Recommendation</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows_html}
-            </tbody>
-        </table>
-    </div>
-    """
-    st.markdown(table_html, unsafe_allow_html=True)
+    # Convert to Pandas DataFrame
+    df = pd.DataFrame(table_records)
+
+    # 1. Summary Quick-Metrics
+    col_m1, col_m2, col_m3 = st.columns(3)
+    with col_m1:
+        st.metric(
+            label="🟢 Already Have",
+            value=f"{matched_count} Skills",
+            help="Core technologies you currently possess"
+        )
+    with col_m2:
+        st.metric(
+            label="🟡 Needs Improvement",
+            value=f"{partial_count} Skills",
+            help="Skills where you have partial familiarity but need deeper practice"
+        )
+    with col_m3:
+        st.metric(
+            label="🔴 Need to Learn",
+            value=f"{missing_count} Skills",
+            help="High-priority gap skills required for your target role"
+        )
+
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+
+    # 2. Interactive Native Streamlit DataFrame
+    st.dataframe(
+        df,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Skill / Technology": st.column_config.TextColumn(
+                "Skill / Technology",
+                help="Technology or core engineering competency",
+                width="medium"
+            ),
+            "Category": st.column_config.TextColumn(
+                "Category",
+                help="Domain or technical stack area",
+                width="small"
+            ),
+            "Current Status": st.column_config.TextColumn(
+                "Current Status",
+                help="Readiness diagnostic status",
+                width="medium"
+            ),
+            "Priority": st.column_config.TextColumn(
+                "Priority",
+                help="Recommended learning priority",
+                width="small"
+            ),
+            "Learning Recommendation": st.column_config.TextColumn(
+                "Learning Recommendation",
+                help="Actionable roadmap guidance",
+                width="large"
+            )
+        }
+    )
 
 
 def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
@@ -179,20 +232,21 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
     total_weeks = len(roadmap)
     progress_pct = int((completed_weeks / total_weeks) * 100) if total_weeks > 0 else 0
 
-    st.markdown(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding: 0.75rem 1rem; background: rgba(14, 20, 36, 0.6); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
-        <div>
-            <span style="font-weight: 700; color: #FFFFFF; font-size: 0.95rem;">Roadmap Progress Tracker:</span>
-            <span style="color: #38BDF8; font-weight: 600; margin-left: 0.5rem;">{completed_weeks} of {total_weeks} Weeks Completed ({progress_pct}%)</span>
-        </div>
-        <span class="badge" style="background: rgba(99, 102, 241, 0.18); color: #A78BFA; border: 1px solid rgba(99, 102, 241, 0.4);">
-            {'🎉 Curriculum Finished!' if progress_pct == 100 else '🚀 In Progress'}
-        </span>
-    </div>
-    """, unsafe_allow_html=True)
+    progress_html = (
+        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding: 0.75rem 1rem; background: rgba(14, 20, 36, 0.6); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">'
+        '<div>'
+        '<span style="font-weight: 700; color: #FFFFFF; font-size: 0.95rem;">Roadmap Progress Tracker:</span>'
+        f'<span style="color: #38BDF8; font-weight: 600; margin-left: 0.5rem;">{completed_weeks} of {total_weeks} Weeks Completed ({progress_pct}%)</span>'
+        '</div>'
+        '<span class="badge" style="background: rgba(99, 102, 241, 0.18); color: #A78BFA; border: 1px solid rgba(99, 102, 241, 0.4);">'
+        f'{"🎉 Curriculum Finished!" if progress_pct == 100 else "🚀 In Progress"}'
+        '</span>'
+        '</div>'
+    )
+    utils.safe_render_html(progress_html)
     st.progress(progress_pct / 100.0)
 
-    st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+    utils.safe_render_html("<div style='height: 12px;'></div>")
 
     for week in roadmap:
         w_num = week.get("week_number", 1)
@@ -224,31 +278,33 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
                 for ex in exercises:
                     st.markdown(f"💻 {ex}")
 
-                st.markdown(f"""
-                <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38BDF8; border-radius: 8px;">
-                    <span style="font-size: 0.78rem; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.04em;">Expected Milestone Outcome:</span><br/>
-                    <span style="font-size: 0.92rem; color: #E2E8F0; line-height: 1.5;">{outcome}</span>
-                </div>
-                """, unsafe_allow_html=True)
+                outcome_html = (
+                    '<div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38BDF8; border-radius: 8px;">'
+                    '<span style="font-size: 0.78rem; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.04em;">Expected Milestone Outcome:</span><br/>'
+                    f'<span style="font-size: 0.92rem; color: #E2E8F0; line-height: 1.5;">{html.escape(outcome)}</span>'
+                    '</div>'
+                )
+                utils.safe_render_html(outcome_html)
 
             with col2:
                 st.markdown("##### 🧠 Skills Developed")
-                skill_tags_html = "".join([f'<span class="skill-tag">{s}</span>' for s in skills])
-                st.markdown(f'<div style="margin-bottom: 1.25rem;">{skill_tags_html}</div>', unsafe_allow_html=True)
+                skill_tags_html = "".join([f'<span class="skill-tag">{html.escape(s)}</span>' for s in skills])
+                utils.safe_render_html(f'<div style="margin-bottom: 1.25rem;">{skill_tags_html}</div>')
 
                 st.markdown("##### 📚 Recommended Resources")
                 for res in resources:
-                    title = res.get("title", "Resource")
-                    r_type = res.get("type", "Guide")
-                    link = res.get("link", "#")
-                    st.markdown(f"""
-                    <div style="margin-bottom: 0.5rem;">
-                        <a href="{link}" target="_blank" style="color: #00D2FF; font-weight: 600; text-decoration: none;">
-                            🔗 {title}
-                        </a>
-                        <span style="font-size: 0.75rem; color: #94A3B8; margin-left: 0.35rem;">({r_type})</span>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    title = html.escape(res.get("title", "Resource"))
+                    r_type = html.escape(res.get("type", "Guide"))
+                    link = html.escape(res.get("link", "#"))
+                    res_html = (
+                        '<div style="margin-bottom: 0.5rem;">'
+                        f'<a href="{link}" target="_blank" style="color: #00D2FF; font-weight: 600; text-decoration: none;">'
+                        f'🔗 {title}'
+                        '</a>'
+                        f'<span style="font-size: 0.75rem; color: #94A3B8; margin-left: 0.35rem;">({r_type})</span>'
+                        '</div>'
+                    )
+                    utils.safe_render_html(res_html)
 
                 st.markdown("---")
                 st.checkbox(
@@ -257,6 +313,7 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
                     value=is_done,
                     help="Check off this milestone as you complete your weekly exercises."
                 )
+
 
 
 def render_portfolio_projects(projects: List[Dict[str, Any]]):

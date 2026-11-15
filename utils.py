@@ -20,6 +20,22 @@ try:
 except ImportError:
     REPORTLAB_AVAILABLE = False
 
+import textwrap
+import streamlit as st
+
+
+def safe_render_html(html_str: str):
+    """
+    Safely render HTML in Streamlit without the CommonMark parser
+    misinterpreting leading whitespace as indented preformatted code blocks.
+    Uses st.html when available (Streamlit 1.34+), or clean unindented st.markdown.
+    """
+    clean_html = textwrap.dedent(html_str).strip()
+    if hasattr(st, "html"):
+        st.html(clean_html)
+    else:
+        st.markdown(clean_html, unsafe_allow_html=True)
+
 
 def sanitize_input(text: str) -> str:
     """Strip dangerous characters and extra whitespace."""

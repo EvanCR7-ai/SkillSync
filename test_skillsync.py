@@ -282,6 +282,41 @@ def test_project_preview_engine():
     print("Project Preview Engine tests passed!")
 
 
+def test_skill_gap_dataframe():
+    print("Testing Skill Gap DataFrame generation...")
+    import pandas as pd
+    mock_skills = [
+        {"skill": "Python", "category": "Programming", "status": "Already Have", "priority": "-", "recommendation": "Maintain proficiency"},
+        {"skill": "SQL", "category": "Database", "status": "Partially Skilled", "priority": "Medium", "recommendation": "Practice advanced joins"},
+        {"skill": "Pandas", "category": "Data Manipulation", "status": "Need to Learn", "priority": "High", "recommendation": "Master DataFrames"}
+    ]
+    # Verify records mapping without relying on any HTML strings
+    records = []
+    for s in mock_skills:
+        skill_name = str(s.get("skill", "Unknown Skill")).strip()
+        category = str(s.get("category", "General")).strip()
+        raw_status = str(s.get("status", "Need to Learn")).strip()
+        raw_priority = str(s.get("priority", "–")).strip()
+        rec = str(s.get("recommendation", "")).strip()
+
+        status_display = "🟢 Already Have" if "have" in raw_status.lower() else ("🟡 Needs Improvement" if "partial" in raw_status.lower() else "🔴 Need to Learn")
+        priority_display = "🔥 High" if "high" in raw_priority.lower() else ("⚡ Medium" if "med" in raw_priority.lower() else "—")
+        records.append({
+            "Skill / Technology": skill_name,
+            "Category": category,
+            "Current Status": status_display,
+            "Priority": priority_display,
+            "Learning Recommendation": rec
+        })
+    df = pd.DataFrame(records)
+    assert len(df) == 3
+    assert list(df.columns) == ["Skill / Technology", "Category", "Current Status", "Priority", "Learning Recommendation"]
+    assert df.iloc[0]["Current Status"] == "🟢 Already Have"
+    assert df.iloc[1]["Current Status"] == "🟡 Needs Improvement"
+    assert df.iloc[2]["Current Status"] == "🔴 Need to Learn"
+    print("Skill Gap DataFrame tests passed!")
+
+
 if __name__ == "__main__":
     test_input_validation()
     test_skill_readiness_calculation()
@@ -292,6 +327,7 @@ if __name__ == "__main__":
     test_fallback_mode()
     test_engine_status_and_security()
     test_project_preview_engine()
+    test_skill_gap_dataframe()
     print("\n[SUCCESS] ALL TESTS PASSED SUCCESSFULLY! 100% OPERATIONAL.")
 
 

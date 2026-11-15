@@ -369,32 +369,32 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
         "motivational_message",
         "Every master was once a beginner. Consistency is the secret to engineering excellence."
     )
-    st.markdown(f"""
+    utils.safe_render_html(f"""
     <div class="motivation-banner">
         <span class="motivation-icon">💡</span>
         <div class="motivation-text">
             <b>Mentor's Take:</b> {motivation_text}
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     # Source Indicator Badge
     if analysis.get("career_summary", {}).get("source") == "gemini_ai":
-        st.markdown("""
+        utils.safe_render_html("""
         <div style="margin-bottom: 1.25rem;">
             <span class="badge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34D399;">
                 ✨ Generated with Live Google Gemini AI
             </span>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     else:
-        st.markdown("""
+        utils.safe_render_html("""
         <div style="margin-bottom: 1.25rem;">
             <span class="badge" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8;">
                 ℹ️ Generated with Curated Industry Roadmap (Live AI Fallback Mode)
             </span>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
     # Tabs for structured navigation
     tab_gap, tab_roadmap, tab_projects, tab_downloads = st.tabs([
@@ -428,11 +428,11 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
                 readiness["total"]
             )
             st.plotly_chart(gauge_fig, use_container_width=True)
-            st.markdown(f"""
+            utils.safe_render_html(f"""
             <div style="text-align: center; font-size: 0.95rem; color: #94A3B8; margin-top: -10px;">
                 Status: <b style="color: #FFFFFF;">{readiness['category']}</b>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
         with col_donut:
             st.markdown("##### 🥧 Skills Coverage Breakdown")
@@ -445,7 +445,7 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
 
         with col_stats:
             st.markdown("##### 📊 Diagnostic Breakdown")
-            st.markdown(f"""
+            utils.safe_render_html(f"""
             <div class="metric-box" style="margin-bottom: 0.75rem;">
                 <div class="metric-val" style="color: #10B981;">{readiness['matched']}</div>
                 <div class="metric-lbl">Skills Matched</div>
@@ -458,20 +458,16 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
                 <div class="metric-val" style="color: #EF4444;">{readiness['missing']}</div>
                 <div class="metric-lbl">Skills to Learn</div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
         st.markdown("<div style='margin-top: 1.5rem;'></div>", unsafe_allow_html=True)
 
         # Comparison Table
         st.markdown("#### 🔍 Required Skills vs. Your Current Status")
-        st.markdown("""
-        <div style="font-size: 0.88rem; color: #94A3B8; margin-bottom: 0.75rem;">
-            Below is the comprehensive matrix of core technologies needed for your target role. 
-            Color badges indicate whether you possess the skill (<span style="color:#10B981">Green</span>), 
-            need refinement (<span style="color:#F59E0B">Amber</span>), 
-            or must learn from scratch (<span style="color:#EF4444">Red</span>).
-        </div>
-        """, unsafe_allow_html=True)
+        st.caption(
+            "Below is the comprehensive diagnostic matrix of core technologies needed for your target role. "
+            "Status indicators: 🟢 **Already Have**, 🟡 **Needs Improvement**, 🔴 **Need to Learn**."
+        )
 
         roadmap_generator.render_skill_gap_table(analysis.get("skills_analysis", []))
 
@@ -480,12 +476,12 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     # --------------------------------------------------------------------------
     with tab_roadmap:
         st.markdown(f"### 🗺️ Tailored 8-Week Roadmap for **{profile.get('target_role')}**")
-        st.markdown(f"""
+        utils.safe_render_html(f"""
         <div style="font-size: 0.95rem; color: #94A3B8; margin-bottom: 1.25rem;">
             Calibrated for <b>{profile.get('study_hours')}</b> per week at <b>{profile.get('experience_level')}</b> level.
             Skills you already possess have been streamlined so you can focus entirely on critical gaps.
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         # Render weekly cards
         roadmap_generator.render_roadmap_cards(analysis.get("roadmap", []))
@@ -518,12 +514,12 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     # --------------------------------------------------------------------------
     with tab_projects:
         st.markdown(f"### 🚀 Standout Portfolio Projects for **{profile.get('target_role')}**")
-        st.markdown("""
+        utils.safe_render_html("""
         <div style="font-size: 0.95rem; color: #94A3B8; margin-bottom: 1.5rem;">
             These 3 curated projects demonstrate graduated mastery from foundational to production-grade architecture.
             Each project is specifically chosen to validate the skills in your learning roadmap.
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         roadmap_generator.render_portfolio_projects(analysis.get("portfolio_projects", []))
 
@@ -555,11 +551,11 @@ if st.session_state.analysis_result and st.session_state.readiness_data:
     # --------------------------------------------------------------------------
     with tab_downloads:
         st.markdown("### 📥 Download & Export Your Career Package")
-        st.markdown("""
+        utils.safe_render_html("""
         <div style="font-size: 0.95rem; color: #94A3B8; margin-bottom: 1.5rem;">
             Export your customized roadmap and diagnostics for offline study, mentor reviews, or academic submissions.
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         col_pdf, col_csv = st.columns(2)
 
