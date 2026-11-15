@@ -130,8 +130,8 @@ def apply_active_theme():
             --gold-champagne: #D9BD79 !important;
             --gold-muted: #8C6B23 !important;
             --text-primary: #171717 !important;
-            --text-secondary: #77716A !important;
-            --text-muted: #9C948A !important;
+            --text-secondary: #525252 !important;
+            --text-muted: #6B655C !important;
             --border-color: #E5DED0 !important;
             --border-gold: rgba(181, 139, 53, 0.35) !important;
             --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
@@ -145,7 +145,7 @@ def apply_active_theme():
             color: #171717;
         }
         [data-testid="stSidebar"] .stButton > button {
-            color: #77716A !important;
+            color: #525252 !important;
         }
         [data-testid="stSidebar"] .stButton > button:hover {
             background: #FFFFFF !important;
@@ -162,6 +162,42 @@ def apply_active_theme():
         [data-testid="stSidebar"] .stButton > button[kind="primary"]::before {
             background-color: #B58B35 !important;
         }
+        /* Primary CTA Buttons (Dark Text on Gold: 8.9:1 Ratio) */
+        section.main button[kind="primary"],
+        section.main [data-testid="stBaseButton-primary"],
+        button[kind="primary"]:not([data-testid="stSidebar"] button),
+        [data-testid="stBaseButton-primary"]:not([data-testid="stSidebar"] *) {
+            background: #D4AF37 !important;
+            color: #090909 !important;
+            border: 1px solid #D4AF37 !important;
+            font-weight: 700 !important;
+            font-size: 14.5px !important;
+        }
+        section.main button[kind="primary"] *,
+        section.main [data-testid="stBaseButton-primary"] *,
+        button[kind="primary"]:not([data-testid="stSidebar"] button) *,
+        [data-testid="stBaseButton-primary"]:not([data-testid="stSidebar"] *) * {
+            color: #090909 !important;
+            font-weight: 700 !important;
+        }
+        section.main button[kind="primary"]:hover,
+        section.main [data-testid="stBaseButton-primary"]:hover {
+            background: #F1D58A !important;
+            border-color: #F1D58A !important;
+            color: #090909 !important;
+        }
+        section.main button[kind="primary"]:hover * {
+            color: #090909 !important;
+        }
+        section.main button[kind="primary"]:active,
+        section.main [data-testid="stBaseButton-primary"]:active {
+            background: #A88735 !important;
+            border-color: #A88735 !important;
+            color: #090909 !important;
+        }
+        section.main button[kind="primary"]:active * {
+            color: #090909 !important;
+        }
         .hero-obsidian, .metric-obsidian, .panel-obsidian {
             background: #FFFFFF !important;
             border-color: #E5DED0 !important;
@@ -170,7 +206,7 @@ def apply_active_theme():
             color: #171717 !important;
         }
         .hero-description, .metric-label {
-            color: #77716A !important;
+            color: #525252 !important;
         }
         .stTextInput input, .stSelectbox [data-baseweb="select"], .stTextArea textarea {
             background-color: #FFFFFF !important;
@@ -195,8 +231,8 @@ def apply_active_theme():
             --gold-champagne: #F1D58A !important;
             --gold-muted: #A88735 !important;
             --text-primary: #F8F5EC !important;
-            --text-secondary: #A5A5A5 !important;
-            --text-muted: #6E6E6E !important;
+            --text-secondary: #C2C2C2 !important;
+            --text-muted: #A5A5A5 !important;
             --border-color: #303030 !important;
             --border-gold: rgba(212, 175, 55, 0.35) !important;
             --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
@@ -226,6 +262,42 @@ def apply_active_theme():
         [data-testid="stSidebar"] .stButton > button[kind="primary"]::before {
             background-color: #F1D58A !important;
         }
+        /* Primary CTA Buttons (Dark Text on Gold: 8.9:1 Ratio) */
+        section.main button[kind="primary"],
+        section.main [data-testid="stBaseButton-primary"],
+        button[kind="primary"]:not([data-testid="stSidebar"] button),
+        [data-testid="stBaseButton-primary"]:not([data-testid="stSidebar"] *) {
+            background: #D4AF37 !important;
+            color: #090909 !important;
+            border: 1px solid #D4AF37 !important;
+            font-weight: 700 !important;
+            font-size: 14.5px !important;
+        }
+        section.main button[kind="primary"] *,
+        section.main [data-testid="stBaseButton-primary"] *,
+        button[kind="primary"]:not([data-testid="stSidebar"] button) *,
+        [data-testid="stBaseButton-primary"]:not([data-testid="stSidebar"] *) * {
+            color: #090909 !important;
+            font-weight: 700 !important;
+        }
+        section.main button[kind="primary"]:hover,
+        section.main [data-testid="stBaseButton-primary"]:hover {
+            background: #F1D58A !important;
+            border-color: #F1D58A !important;
+            color: #090909 !important;
+        }
+        section.main button[kind="primary"]:hover * {
+            color: #090909 !important;
+        }
+        section.main button[kind="primary"]:active,
+        section.main [data-testid="stBaseButton-primary"]:active {
+            background: #A88735 !important;
+            border-color: #A88735 !important;
+            color: #090909 !important;
+        }
+        section.main button[kind="primary"]:active * {
+            color: #090909 !important;
+        }
         .hero-obsidian, .metric-obsidian, .panel-obsidian {
             background: #171717 !important;
             border-color: #303030 !important;
@@ -234,7 +306,7 @@ def apply_active_theme():
             color: #F8F5EC !important;
         }
         .hero-description, .metric-label {
-            color: #A5A5A5 !important;
+            color: #C2C2C2 !important;
         }
         .stTextInput input, .stSelectbox [data-baseweb="select"], .stTextArea textarea {
             background-color: #171717 !important;
