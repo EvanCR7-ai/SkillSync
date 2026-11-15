@@ -283,8 +283,6 @@ def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
             help="High-priority gap skills required for your target role"
         )
 
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-
     # 2. Interactive Native Streamlit DataFrame
     st.dataframe(
         df,
@@ -319,6 +317,24 @@ def render_skill_gap_table(skills_analysis: List[Dict[str, Any]]):
         }
     )
 
+    # 3. Structured Card Breakdown Option
+    with st.expander("📋 View Detailed Card Breakdown by Technology", expanded=False):
+        for s in skills_analysis:
+            s_name = s.get("skill", "Unknown")
+            cat = s.get("category", "General")
+            status = s.get("status", "Need to Learn")
+            priority = s.get("priority", "–")
+            rec = s.get("recommendation", "")
+            status_icon = "🟢" if "have" in status.lower() else ("🟡" if "partial" in status.lower() else "🔴")
+
+            c1, c2 = st.columns([1, 2])
+            with c1:
+                st.markdown(f"**{status_icon} {s_name}**")
+                st.caption(f"Category: `{cat}` • Priority: `{priority}`")
+            with c2:
+                st.markdown(f"*{rec}*")
+            st.markdown("---")
+
 
 def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
     """
@@ -333,21 +349,13 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
     total_weeks = len(roadmap)
     progress_pct = int((completed_weeks / total_weeks) * 100) if total_weeks > 0 else 0
 
-    progress_html = (
-        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding: 0.75rem 1rem; background: rgba(14, 20, 36, 0.6); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">'
-        '<div>'
-        '<span style="font-weight: 700; color: #FFFFFF; font-size: 0.95rem;">Roadmap Progress Tracker:</span>'
-        f'<span style="color: #38BDF8; font-weight: 600; margin-left: 0.5rem;">{completed_weeks} of {total_weeks} Weeks Completed ({progress_pct}%)</span>'
-        '</div>'
-        '<span class="badge" style="background: rgba(99, 102, 241, 0.18); color: #A78BFA; border: 1px solid rgba(99, 102, 241, 0.4);">'
-        f'{"🎉 Curriculum Finished!" if progress_pct == 100 else "🚀 In Progress"}'
-        '</span>'
-        '</div>'
-    )
-    utils.safe_render_html(progress_html)
+    col_prog1, col_prog2 = st.columns([3, 1])
+    with col_prog1:
+        st.markdown(f"**Roadmap Progress Tracker:** `{completed_weeks} of {total_weeks} Weeks Completed ({progress_pct}%)`")
+    with col_prog2:
+        status_txt = "🎉 Curriculum Finished!" if progress_pct == 100 else "🚀 In Progress"
+        st.info(status_txt)
     st.progress(progress_pct / 100.0)
-
-    utils.safe_render_html("<div style='height: 12px;'></div>")
 
     for week in roadmap:
         w_num = week.get("week_number", 1)
@@ -382,33 +390,19 @@ def render_roadmap_cards(roadmap: List[Dict[str, Any]]):
                 mini_project = week.get("mini_project", f"Build a focused working prototype applying Week {w_num} skills.")
                 st.markdown(f"🚀 **Weekly Mini-Project:** `{mini_project}`")
 
-                outcome_html = (
-                    '<div style="margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38BDF8; border-radius: 8px;">'
-                    '<span style="font-size: 0.78rem; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.04em;">Expected Milestone Outcome:</span><br/>'
-                    f'<span style="font-size: 0.92rem; color: #E2E8F0; line-height: 1.5;">{html.escape(outcome)}</span>'
-                    '</div>'
-                )
-                utils.safe_render_html(outcome_html)
+                st.info(f"🏆 **Expected Milestone Outcome:** {outcome}")
 
             with col2:
                 st.markdown("##### 🧠 Skills Developed")
-                skill_tags_html = "".join([f'<span class="skill-tag">{html.escape(s)}</span>' for s in skills])
-                utils.safe_render_html(f'<div style="margin-bottom: 1.25rem;">{skill_tags_html}</div>')
+                skill_chips = " ".join([f"`{s}`" for s in skills])
+                st.markdown(skill_chips if skill_chips else "`Core Concepts`")
 
                 st.markdown("##### 📚 Recommended Resources")
                 for res in resources:
-                    title = html.escape(res.get("title", "Resource"))
-                    r_type = html.escape(res.get("type", "Guide"))
-                    link = html.escape(res.get("link", "#"))
-                    res_html = (
-                        '<div style="margin-bottom: 0.5rem;">'
-                        f'<a href="{link}" target="_blank" style="color: #00D2FF; font-weight: 600; text-decoration: none;">'
-                        f'🔗 {title}'
-                        '</a>'
-                        f'<span style="font-size: 0.75rem; color: #94A3B8; margin-left: 0.35rem;">({r_type})</span>'
-                        '</div>'
-                    )
-                    utils.safe_render_html(res_html)
+                    title = res.get("title", "Resource")
+                    r_type = res.get("type", "Guide")
+                    link = res.get("link", "#")
+                    st.markdown(f"🔗 [{title}]({link}) *({r_type})*")
 
                 st.markdown("---")
                 st.checkbox(

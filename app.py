@@ -604,11 +604,7 @@ elif st.session_state.current_page == "🔍 Skill Gap Analysis":
                 readiness["total"]
             )
             st.plotly_chart(gauge_fig, use_container_width=True)
-            utils.safe_render_html(f"""
-            <div style="text-align: center; font-size: 0.95rem; color: #94A3B8; margin-top: -12px;">
-                Status: <b style="color: #FFFFFF;">{readiness['category']}</b>
-            </div>
-            """)
+            st.caption(f"Status: **{readiness['category']}**")
 
         with col_donut:
             st.markdown("##### 🥧 Skills Breakdown")
@@ -624,7 +620,7 @@ elif st.session_state.current_page == "🔍 Skill Gap Analysis":
             bar_fig = roadmap_generator.create_category_distribution_bar(analysis.get("skills_analysis", []))
             st.plotly_chart(bar_fig, use_container_width=True)
 
-        st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+        st.markdown("---")
 
         # Native Structured Skill Comparison Table
         st.markdown("#### 🔍 Required Skills vs. Your Current Status")
@@ -715,30 +711,22 @@ elif st.session_state.current_page == "📄 AI Resume Analyzer":
             gauge_fig = roadmap_generator.create_ats_score_gauge(score)
             st.plotly_chart(gauge_fig, use_container_width=True)
             match_lvl = ats.get("match_level", "Moderate Match")
-            utils.safe_render_html(f"""
-            <div style="text-align: center; font-size: 0.95rem; color: #94A3B8; margin-top: -12px;">
-                Compatibility: <b style="color: #22D3EE;">{match_lvl}</b>
-            </div>
-            """)
+            st.caption(f"Compatibility: **{match_lvl}**")
 
         with col_ats_overview:
             st.markdown("##### 📌 ATS Assessment Summary")
-            utils.safe_render_html(f"""
-            <div class="glass-panel" style="padding: 1.25rem;">
-                <div style="font-size: 0.9rem; color: #E2E8F0; line-height: 1.6;">
-                    Your resume was evaluated against <b>{html.escape(target_role_for_ats)}</b> requirements. 
-                    Adding quantified deliverables and closing keyword gaps will maximize your interview callback rate.
-                </div>
-            </div>
-            """)
+            st.info(
+                f"Your resume was evaluated against **{target_role_for_ats}** requirements. "
+                "Adding quantified deliverables and closing keyword gaps will maximize your interview callback rate."
+            )
 
-        st.markdown("<div style='height: 1.25rem;'></div>", unsafe_allow_html=True)
+        st.markdown("---")
 
         col_skills, col_gaps = st.columns(2)
         with col_skills:
             st.markdown("##### 🟢 Matching Skills Detected")
-            matching_tags = "".join([f'<span class="skill-tag" style="background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.35); color: #4ADE80;">✓ {html.escape(s)}</span>' for s in ats.get("matching_skills", [])])
-            utils.safe_render_html(f'<div style="margin-bottom: 1.25rem;">{matching_tags}</div>')
+            matching_tags = " ".join([f"`✓ {s}`" for s in ats.get("matching_skills", [])])
+            st.markdown(matching_tags if matching_tags else "`Foundational Skills`")
 
             st.markdown("##### 🏆 Resume Strengths")
             for strength in ats.get("strengths", []):
@@ -746,8 +734,8 @@ elif st.session_state.current_page == "📄 AI Resume Analyzer":
 
         with col_gaps:
             st.markdown("##### 🔴 Missing Industry Keywords")
-            missing_tags = "".join([f'<span class="skill-tag" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #F87171;">✕ {html.escape(s)}</span>' for s in ats.get("missing_keywords", [])])
-            utils.safe_render_html(f'<div style="margin-bottom: 1.25rem;">{missing_tags}</div>')
+            missing_tags = " ".join([f"`✕ {s}`" for s in ats.get("missing_keywords", [])])
+            st.markdown(missing_tags if missing_tags else "`None identified`")
 
             st.markdown("##### ⚠️ Areas for Improvement")
             for imp in ats.get("improvements", []):
@@ -810,16 +798,7 @@ elif st.session_state.current_page == "🎙️ AI Mock Interview":
         q_idx = st.session_state.active_interview_idx
         q_item = questions[q_idx]
 
-        utils.safe_render_html(f"""
-        <div class="interview-question-box">
-            <div style="font-size: 0.8rem; font-weight: 700; color: #22D3EE; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-                Question {q_idx + 1} of {len(questions)} • {html.escape(q_item.get('category', 'Technical'))}
-            </div>
-            <div style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF; line-height: 1.5;">
-                {html.escape(q_item.get('question', ''))}
-            </div>
-        </div>
-        """)
+        st.info(f"**Question {q_idx + 1} of {len(questions)} • {q_item.get('category', 'Technical')}**\n\n### {q_item.get('question', '')}")
 
         # Candidate Answer Input Area
         candidate_answer = st.text_area(
@@ -858,36 +837,20 @@ elif st.session_state.current_page == "🎙️ AI Mock Interview":
             ev = st.session_state.mock_interview_eval
             score_10 = ev.get("score", 7)
 
-            utils.safe_render_html(f"""
-            <div class="interview-feedback-box">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                    <div style="font-weight: 800; font-size: 1.15rem; color: #FFFFFF;">AI Evaluation Report</div>
-                    <div style="font-size: 1.35rem; font-weight: 900; color: #22C55E;">Score: {score_10} / 10</div>
-                </div>
-                <div style="font-size: 0.92rem; color: #E2E8F0; line-height: 1.6; margin-bottom: 1rem;">
-                    {html.escape(ev.get("feedback", ""))}
-                </div>
-            </div>
-            """)
+            st.success(f"### 📊 AI Evaluation Report • Score: {score_10} / 10\n\n{ev.get('feedback', '')}")
 
             col_ev_s, col_ev_i = st.columns(2)
             with col_ev_s:
                 st.markdown("##### 🟢 Strengths")
                 for s in ev.get("strengths", []):
-                    st.markdown(f"• {s}")
+                    st.markdown(f"• **{s}**")
             with col_ev_i:
                 st.markdown("##### ⚠️ Improvement Opportunities")
                 for imp in ev.get("improvement_areas", []):
                     st.markdown(f"• {imp}")
 
             st.markdown("##### 🏆 Model Exemplary Answer")
-            utils.safe_render_html(f"""
-            <div class="glass-panel" style="padding: 1rem; border-left: 3px solid #8B5CF6;">
-                <div style="font-size: 0.88rem; color: #CBD5E1; line-height: 1.6;">
-                    {html.escape(ev.get("model_answer", ""))}
-                </div>
-            </div>
-            """)
+            st.info(ev.get("model_answer", ""))
 
 
 # ==============================================================================
@@ -962,127 +925,77 @@ elif st.session_state.current_page == "📚 Learning Resources":
     with tab_web:
         col_w1, col_w2 = st.columns(2)
         with col_w1:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 React 19 Official Documentation</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">Official Guide • Advanced React</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Master React Server Components, Suspense architecture, and custom hooks with interactive sandboxes.
-                </div>
-                <a href="https://react.dev" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Explore Documentation ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [React 19 Official Documentation](https://react.dev)")
+                st.caption("Official Guide • Advanced React")
+                st.markdown("Master React Server Components, Suspense architecture, and custom hooks with interactive sandboxes.")
+                st.link_button("Explore Documentation ↗", "https://react.dev", use_container_width=True)
         with col_w2:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Web.dev Core Web Vitals</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">Google Developer Guide • Performance</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    In-depth techniques for optimizing Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and layout shifts.
-                </div>
-                <a href="https://web.dev/explore/metrics" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">View Guide ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Web.dev Core Web Vitals](https://web.dev/explore/metrics)")
+                st.caption("Google Developer Guide • Performance")
+                st.markdown("In-depth techniques for optimizing Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and layout shifts.")
+                st.link_button("View Guide ↗", "https://web.dev/explore/metrics", use_container_width=True)
 
     with tab_back:
         col_b1, col_b2 = st.columns(2)
         with col_b1:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Use The Index, Luke!</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">Database Mastery • SQL Optimization</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    A definitive guide to database performance, composite B-Tree indexes, and relational query tuning.
-                </div>
-                <a href="https://use-the-index-luke.com/" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Read Handbook ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Use The Index, Luke!](https://use-the-index-luke.com/)")
+                st.caption("Database Mastery • SQL Optimization")
+                st.markdown("A definitive guide to database performance, composite B-Tree indexes, and relational query tuning.")
+                st.link_button("Read Handbook ↗", "https://use-the-index-luke.com/", use_container_width=True)
         with col_b2:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Designing Data-Intensive Applications</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">Distributed Systems • Architecture</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Fundamental principles for building reliable, scalable, and maintainable data systems and microservices.
-                </div>
-                <a href="https://dataintensive.net/" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Learn More ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Designing Data-Intensive Applications](https://dataintensive.net/)")
+                st.caption("Distributed Systems • Architecture")
+                st.markdown("Fundamental principles for building reliable, scalable, and maintainable data systems and microservices.")
+                st.link_button("Learn More ↗", "https://dataintensive.net/", use_container_width=True)
 
     with tab_data:
         col_d1, col_d2 = st.columns(2)
         with col_d1:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Fast.ai Practical Deep Learning</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">Deep Learning • PyTorch</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Hands-on course taking you from fundamentals to training state-of-the-art vision and language models.
-                </div>
-                <a href="https://course.fast.ai" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Access Free Course ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Fast.ai Practical Deep Learning](https://course.fast.ai)")
+                st.caption("Deep Learning • PyTorch")
+                st.markdown("Hands-on course taking you from fundamentals to training state-of-the-art vision and language models.")
+                st.link_button("Access Free Course ↗", "https://course.fast.ai", use_container_width=True)
         with col_d2:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Google Gemini API Documentation</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">GenAI • LLM Integration</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Comprehensive guides for structured JSON outputs, multimodal reasoning, and embeddings.
-                </div>
-                <a href="https://ai.google.dev/docs" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">View API Docs ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Google Gemini API Documentation](https://ai.google.dev/docs)")
+                st.caption("GenAI • LLM Integration")
+                st.markdown("Comprehensive guides for structured JSON outputs, multimodal reasoning, and embeddings.")
+                st.link_button("View API Docs ↗", "https://ai.google.dev/docs", use_container_width=True)
 
     with tab_devops:
         col_dp1, col_dp2 = st.columns(2)
         with col_dp1:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Docker Curriculum</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">DevOps Basics • Containerization</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Practical hands-on guide for containerizing full-stack applications and orchestrating multi-service setups.
-                </div>
-                <a href="https://docker-curriculum.com/" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Start Tutorial ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Docker Curriculum](https://docker-curriculum.com/)")
+                st.caption("DevOps Basics • Containerization")
+                st.markdown("Practical hands-on guide for containerizing full-stack applications and orchestrating multi-service setups.")
+                st.link_button("Start Tutorial ↗", "https://docker-curriculum.com/", use_container_width=True)
         with col_dp2:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🔗 Kubernetes Interactive Tutorials</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">K8s • Cloud Native</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Learn to deploy, scale, and update containerized applications directly in a live terminal sandbox.
-                </div>
-                <a href="https://kubernetes.io/docs/tutorials/" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Interactive Sandbox ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🔗 [Kubernetes Interactive Tutorials](https://kubernetes.io/docs/tutorials/)")
+                st.caption("K8s • Cloud Native")
+                st.markdown("Learn to deploy, scale, and update containerized applications directly in a live terminal sandbox.")
+                st.link_button("Interactive Sandbox ↗", "https://kubernetes.io/docs/tutorials/", use_container_width=True)
 
     with tab_certs:
         col_c1, col_c2 = st.columns(2)
         with col_c1:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🎓 freeCodeCamp Certifications</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">300-Hour Accredited Curriculums • 100% Free</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    Recognized credentials in Responsive Web Design, JavaScript Algorithms, Relational Databases, and Machine Learning.
-                </div>
-                <a href="https://www.freecodecamp.org/learn" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Enroll Free ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🎓 [freeCodeCamp Certifications](https://www.freecodecamp.org/learn)")
+                st.caption("300-Hour Accredited Curriculums • 100% Free")
+                st.markdown("Recognized credentials in Responsive Web Design, JavaScript Algorithms, Relational Databases, and Machine Learning.")
+                st.link_button("Enroll Free ↗", "https://www.freecodecamp.org/learn", use_container_width=True)
         with col_c2:
-            utils.safe_render_html("""
-            <div class="resource-tile">
-                <div style="font-weight: 800; font-size: 1.1rem; color: #FFFFFF; margin-bottom: 0.35rem;">🎓 CS50x: Introduction to Computer Science</div>
-                <div style="font-size: 0.82rem; color: #22D3EE; margin-bottom: 0.5rem;">Harvard University • edX</div>
-                <div style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1rem;">
-                    The world-renowned computer science course covering C, algorithms, memory, Python, SQL, and web development.
-                </div>
-                <a href="https://cs50.harvard.edu/x" target="_blank" style="color: #8B5CF6; font-weight: 700; text-decoration: none;">Audit Course ↗</a>
-            </div>
-            """)
+            with st.container(border=True):
+                st.markdown("#### 🎓 [CS50x: Introduction to Computer Science](https://cs50.harvard.edu/x)")
+                st.caption("Harvard University • edX")
+                st.markdown("The world-renowned computer science course covering C, algorithms, memory, Python, SQL, and web development.")
+                st.link_button("Audit Course ↗", "https://cs50.harvard.edu/x", use_container_width=True)
 
 
 # ==============================================================================

@@ -635,6 +635,7 @@ def render_project_showcase(project: Dict[str, Any], index: int):
     """
     Render a single portfolio project in visual-first presentation:
     Live interactive rendered preview at the top, followed by specs and optional developer tools.
+    Uses 100% native Streamlit components and components.html iframe for reliable visual rendering.
     """
     diff = project.get("difficulty", "Intermediate").capitalize()
     title = project.get("title", f"Project {index}")
@@ -645,79 +646,53 @@ def render_project_showcase(project: Dict[str, Any], index: int):
     time_est = project.get("estimated_completion_time", "1-2 weeks")
     final_output = project.get("expected_final_output", "Interactive live demo and repository")
 
-    diff_class = diff.lower()
-    if diff_class not in ["beginner", "intermediate", "advanced"]:
-        diff_class = "intermediate"
+    diff_icon = "🟢" if diff == "Beginner" else ("🟣" if diff == "Intermediate" else "🔴")
 
-    # Header Card
-    tech_pills = "".join([f'<span class="skill-tag" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.35);">{t}</span>' for t in techs])
-    skill_pills = "".join([f'<span class="skill-tag">{s}</span>' for s in skills_demo])
+    # Project Header & Overview
+    col_hdr, col_badge = st.columns([3, 1])
+    with col_hdr:
+        st.markdown(f"### {diff_icon} {title}")
+        st.caption(f"**Tier:** `{diff} Level` • **Estimated Effort:** `{time_est}`")
+    with col_badge:
+        st.info(f"🏆 {diff} Project")
 
-    st.markdown(f"""
-    <div class="project-card {diff_class}" style="margin-bottom: 1rem; padding: 1.5rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
-            <div>
-                <span class="project-difficulty {diff_class}">● {diff} Tier Project</span>
-                <span style="color: #94A3B8; font-size: 0.825rem; margin-left: 0.5rem;">Estimated Effort: <b>{time_est}</b></span>
-            </div>
-            <span class="badge" style="background: rgba(0, 210, 255, 0.12); color: #00D2FF; border: 1px solid rgba(0, 210, 255, 0.35);">
-                🖥️ Interactive Live Prototype Below
-            </span>
-        </div>
-        <div class="project-title" style="font-size: 1.4rem;">{title}</div>
-        <div class="project-desc" style="font-size: 0.95rem; margin-bottom: 0.75rem;">{desc}</div>
+    st.markdown(f"**Overview:** {desc}")
+
+    # Core Problem & Technologies in 2 Columns
+    col_p1, col_p2 = st.columns(2)
+    with col_p1:
+        st.markdown("##### 🎯 Problem Solved")
+        st.info(problem if problem else "Solves core business/engineering challenge with clean architecture.")
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08);">
-            <div>
-                <div class="project-section-title">Problem Solved</div>
-                <div style="font-size: 0.88rem; color: #CBD5E1; line-height: 1.5;">{problem}</div>
-            </div>
-            <div>
-                <div class="project-section-title">Technologies Required</div>
-                <div>{tech_pills}</div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown("##### 📦 Expected Deliverable")
+        st.success(final_output)
 
-    # 1. LIVE VISUAL PREVIEW (PRIMARY OUTPUT)
+    with col_p2:
+        st.markdown("##### 🛠️ Technologies Required")
+        tech_chips = " ".join([f"`{t}`" for t in techs])
+        st.markdown(tech_chips if tech_chips else "`Python` `SQL`")
+
+        st.markdown("##### 🧠 Demonstrated Recruiter Competencies")
+        skill_chips = " ".join([f"`{s}`" for s in skills_demo])
+        st.markdown(skill_chips if skill_chips else "`Architecture Design` `Clean Code`")
+
+    st.markdown("---")
+
+    # 1. LIVE VISUAL PREVIEW & INTERACTIVE SIMULATION (PRIMARY OUTPUT)
     st.markdown("##### 🖥️ Live Rendered Result & Interactive Simulation")
     st.caption("Interact with the live application preview below. Test controls, sliders, buttons, and responsive layouts.")
-    
+
     try:
         preview_html = generate_live_preview_html(project)
-        components.html(preview_html, height=480, scrolling=True)
+        components.html(preview_html, height=520, scrolling=True)
     except Exception as e:
         st.error(f"Could not render visual preview: {e}")
 
-    # 2. FINISHED PROJECT SPECIFICATION
-    col_out, col_skills = st.columns([1, 1])
-    with col_out:
-        st.markdown(f"""
-        <div style="background: rgba(14, 20, 36, 0.6); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem;">
-            <div style="font-size: 0.78rem; text-transform: uppercase; color: #00D2FF; font-weight: 700; letter-spacing: 0.05em;">
-                What The Finished Project Looks Like
-            </div>
-            <div style="font-size: 0.88rem; color: #F8FAFC; margin-top: 4px; line-height: 1.5;">
-                📦 <b>Deliverable:</b> {final_output}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_skills:
-        st.markdown(f"""
-        <div style="background: rgba(14, 20, 36, 0.6); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin-top: 0.5rem;">
-            <div style="font-size: 0.78rem; text-transform: uppercase; color: #8B5CF6; font-weight: 700; letter-spacing: 0.05em;">
-                Demonstrated Recruiter Competencies
-            </div>
-            <div style="margin-top: 4px;">{skill_pills}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # 3. COLLAPSED EXPANDER: DEVELOPER TOOLS — VIEW SOURCE CODE
+    # 2. COLLAPSED EXPANDER: DEVELOPER TOOLS — VIEW SOURCE CODE
     with st.expander("🛠️ Developer Tools — View Source Code", expanded=False):
         st.caption("Source code is provided for developer reference. Use the tabs below to copy or download project files.")
         source_files = get_project_source_files(project)
-        
+
         file_tabs = st.tabs(list(source_files.keys()))
         for tab_idx, (filename, content) in enumerate(source_files.items()):
             with file_tabs[tab_idx]:
