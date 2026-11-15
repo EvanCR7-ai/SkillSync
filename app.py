@@ -16,7 +16,11 @@ import pandas as pd
 import plotly.graph_objects as go
 from dotenv import load_dotenv
 
-import importlib
+# Path configuration using pathlib
+BASE_DIR = Path(__file__).resolve().parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 # Internal module imports
 import ai_engine
 import roadmap_generator
@@ -24,18 +28,17 @@ import project_preview_engine
 import utils
 import icons
 
-# Ensure hot-reloaded modules in long-running Streamlit processes stay synchronized
-importlib.reload(ai_engine)
-importlib.reload(roadmap_generator)
-importlib.reload(project_preview_engine)
-importlib.reload(utils)
-importlib.reload(icons)
+# Safely refresh submodules if already loaded in long-running container
+for mod in [roadmap_generator, project_preview_engine, utils, icons]:
+    try:
+        import importlib
+        importlib.reload(mod)
+    except Exception:
+        pass
 
 # Load environment variables
 load_dotenv()
 
-# Path configuration using pathlib
-BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
 LOGO_PATH = ASSETS_DIR / "skillsync-gold-logo.png"
 ICON_PATH = ASSETS_DIR / "skillsync-gold-icon.png"

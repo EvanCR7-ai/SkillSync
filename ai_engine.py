@@ -1163,8 +1163,9 @@ if __name__ == "__main__":
     import sys
     from pathlib import Path
 
-    sys.modules["ai_engine"] = sys.modules[__name__]
     app_file = Path(__file__).resolve().parent / "app.py"
+    if str(app_file.parent) not in sys.path:
+        sys.path.insert(0, str(app_file.parent))
     if app_file.exists():
         runpy.run_path(str(app_file), run_name="__main__")
 
